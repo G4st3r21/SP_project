@@ -24,14 +24,14 @@ class ResponseObjects:
         return resp_obj[0][1] if resp_obj else False
 
     # Добавление нового объекта только по title
+    # Возвращает id объекта
     def add_new(self, title):
-        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name}")
-        last_id = self.cur.fetchall()[-1][0]
-        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({last_id+1}, '{title}')")
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} ORDER BY id")
+        obj_id = self.cur.fetchall()[-1][0] + 1
+        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, '{title}')")
+        self.conn.commit()
+
+        return obj_id
 
 
 rp = ResponseObjects()
-print(rp.find_id_by_name("Департамент финансов Воронежской области"))
-print(rp.find_id_by_name("Департамент дорожной деятельности Воронежской области"))
-print(rp.find_name_by_id(12))
-print(rp.find_name_by_id(50))

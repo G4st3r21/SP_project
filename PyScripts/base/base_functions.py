@@ -36,27 +36,4 @@ def read_first_str_number():
     return int(input("Номер строки для начала парсинга: "))-1
 
 
-def char_index_from_number(id):
-    if isinstance(id, str):
-        n = int(id, 10)
-    else:
-        n = int(id)
-        # now convert decimal to 'to_base' base
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    if n < len(alphabet):
-        return alphabet[n]
-    else:
-        return char_index_from_number(n // len(alphabet)-1) + alphabet[n % len(alphabet)]
 
-
-def char_index_from_number_reversed(id):
-    if isinstance(id, str):
-        n = int(id, 26)
-    else:
-        n = int(id)
-        # now convert decimal to 'to_base' base
-    alphabet = "0123456789"
-    if n < len(alphabet):
-        return alphabet[n]
-    else:
-        return char_index_from_number(n // len(alphabet)-1) + alphabet[n % len(alphabet)]

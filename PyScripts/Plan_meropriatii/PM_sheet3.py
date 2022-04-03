@@ -1,11 +1,11 @@
-from base_functions import *
+from PyScripts.base.base_functions import *
 
 
 def cell_gp_fin_parsing(strk):
     if '"' in strk:
         gp_name = strk.split('"')[1]
     else:
-        gp_name = False
+        gp_name = 'Null'
     if "," in strk.split('"')[-1] and len(strk.split('"')) > 1:
         fin_source = str(strk.split('"')[-1])[1:].lower()
     else:
@@ -42,7 +42,7 @@ def table_parsing():
 
             gp_name, fin_source = cell_gp_fin_parsing(row[4].value)
             has_that_gp = cur.execute(
-                    f"SELECT * FROM gosprogram WHERE gosprogram LIKE {gp_name}").fetchall()
+                f"SELECT * FROM gosprogram WHERE gosprogram LIKE {gp_name}").fetchall()
             if has_that_gp:
                 gp_id = has_that_gp[0]
             else:
@@ -51,8 +51,7 @@ def table_parsing():
                 gp_id = char_index_from_number(char_index_from_number_reversed(char_gp_id) + 1)
                 cur.execute(f"INSERT INTO gosprogram VALUES ('{gp_id}', '{gp_name}')")
 
-
-
+            response_obj = [obj.capitalize() for obj in str(row[5].value).split(';\n')]
 
 
 cols, rows, first_str_number, cur, conn = parser_init("План мероприятий.xlsx", 3)
