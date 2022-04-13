@@ -21,7 +21,7 @@ class GosprogramTasks(BasicTable):
         obj_id = self.find_id_prog_by_id_task(id_task)
         if obj_id:
             return obj_id
-        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name}({self.title}) VALUES ('{title}')")
+        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({id_prog}, '{id_task}')")
         self.isEmpty = False
 
         return self.find_id_prog_by_id_task(id_task)
