@@ -1,7 +1,7 @@
-from PyScripts.TableClasses.BasicTables import BasicTableWithoutSerialType, BasicTable
+from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTableWithoutSerialType, BasicTable
 from PyScripts.base.base_functions import *
-from PyScripts.TableClasses.GrowthPoints import GrowthPoint
-from PyScripts.TableClasses.Gosprogram import Gosprogram
+from PyScripts.TableClasses.PublicClasses.GrowthPoints import GrowthPoint
+from PyScripts.TableClasses.PublicClasses.Gosprogram import Gosprogram
 from PM_sheet3 import cell_gp_fin_parsing
 
 

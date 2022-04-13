@@ -44,7 +44,7 @@ class BasicTable:
             self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name}(id, {self.title}) VALUES (1, '{title}')")
         else:
             self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name}({self.title}) VALUES ('{title}')")
-        self.is_empty_table()
+        self.isEmpty = False
 
         return self.find_id_by_name(title)
 
@@ -53,9 +53,11 @@ class BasicTable:
     def del_obj(self, title=None, obj_id=None) -> bool:
         if title and self.find_id_by_name(title):
             self.cur.execute(f"DELETE FROM {self.schema}.{self.table_name} WHERE {self.title} = '{title}'")
+            self.is_empty_table()
             return True
         elif obj_id and self.find_name_by_id(obj_id):
             self.cur.execute(f"DELETE FROM {self.schema}.{self.table_name} WHERE id = {obj_id}")
+            self.is_empty_table()
             return True
 
         return False
