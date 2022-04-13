@@ -18,7 +18,7 @@ class AllEvents(BasicTable):
 
         return obj[0][1] if obj else False
 
-    def add_new(self, id_obj, title: str) -> str:
+    def add(self, id_obj, title: str) -> str:
         obj_id = self.find_id_by_name(title)
         if obj_id:
             return obj_id

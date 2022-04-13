@@ -1,5 +1,3 @@
-from PyScripts.base.base_functions import db_conn
-
 
 class BasicTable:
     def __init__(self, table_name, table_title, cur, conn):
@@ -36,7 +34,7 @@ class BasicTable:
 
     # Добавление нового объекта только по title (c проверкой на наличие в таблице)
     # Возвращает id
-    def add_new(self, title: str) -> int:
+    def add(self, title: str) -> int:
         obj_id = self.find_id_by_name(title)
         if obj_id:
             return obj_id
@@ -67,7 +65,7 @@ class BasicTableWithoutSerialType(BasicTable):
     def __init__(self, table_name, table_title, cur, conn):
         super().__init__(table_name, table_title, cur, conn)
 
-    def add_new(self, title: str) -> int:
+    def add(self, title: str) -> int:
         obj_id = self.find_id_by_name(title)
         if obj_id:
             return obj_id

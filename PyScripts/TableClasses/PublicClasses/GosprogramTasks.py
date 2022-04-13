@@ -1,7 +1,7 @@
 from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTable
 
 
-class GosprogramAndTasks(BasicTable):
+class GosprogramTasks(BasicTable):
     def __init__(self, cur, conn):
         super().__init__(table_name='gosprogram_tasks', table_title='id_task', cur=cur, conn=conn)
 
@@ -17,7 +17,7 @@ class GosprogramAndTasks(BasicTable):
 
         return obj[0][1] if obj else False
 
-    def add_new(self, id_prog, id_task) -> int:
+    def add(self, id_prog, id_task) -> int:
         obj_id = self.find_id_prog_by_id_task(id_task)
         if obj_id:
             return obj_id

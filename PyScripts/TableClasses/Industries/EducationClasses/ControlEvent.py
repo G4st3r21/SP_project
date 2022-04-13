@@ -31,7 +31,7 @@ class ControlEvent(BasicTable):
 
         return obj[0][1] if obj else False
 
-    def add_new(self, obj_code, code_main_event, control_event):
+    def add(self, obj_code, code_main_event, control_event):
         obj_id = self.find_id_by_name(control_event)
         if obj_id:
             return obj_id

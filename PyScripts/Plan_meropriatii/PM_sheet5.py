@@ -33,7 +33,7 @@ def table_parsing():
     for row in rows:
         if 'Точка роста' in str(row[0].value):
             growth_point = str(row[0].value).split('"')[1]
-            growth_point_id = GrowthPointNames.add_new(growth_point)
+            growth_point_id = GrowthPointNames.add(growth_point)
         else:
             if row[0].value is not None:
                 id_sub_aim, id_task = cell_task_id_parsing(row[0])
@@ -41,14 +41,14 @@ def table_parsing():
             id_event = id_event[:-1] if id_event[-1] == '.' else id_event
             event = " ".join(str(row[1].value).split()[1:])
 
-            period_id = ImplementationPeriod.add_new(row[2].value)
+            period_id = ImplementationPeriod.add(row[2].value)
 
-            result_id = ExpectedResult.add_new(row[3].value) if row[2].value != 'null' else ExpectedResult.add_new(
+            result_id = ExpectedResult.add(row[3].value) if row[2].value != 'null' else ExpectedResult.add(
                 'Null')
 
             gp_name, fin_source = cell_gp_fin_parsing(row[4])
             gp_id = Gosprogram.add_new(gp_name) if gp_name != 'null' else Gosprogram.add_new('Null')
-            fin_source_id = FinancingSource.add_new(fin_source) if fin_source != 'null' else FinancingSource.add_new(
+            fin_source_id = FinancingSource.add(fin_source) if fin_source != 'null' else FinancingSource.add(
                 'Null')
 
             response_obj = [obj.capitalize() for obj in str(row[5].value).split(';\n')]
@@ -56,7 +56,7 @@ def table_parsing():
 
             commit_all()
             for r_obj in response_obj:
-                r_obj_id = ResponseObj.add_new(r_obj)
+                r_obj_id = ResponseObj.add(r_obj)
                 cur.execute(f"INSERT INTO public.GROWTH_POINT_AND_RESPONSE_OBJ VALUES ('{id_event}', {r_obj_id})")
 
 

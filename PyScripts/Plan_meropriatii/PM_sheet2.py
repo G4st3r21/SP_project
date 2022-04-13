@@ -58,7 +58,7 @@ def table_parsing():
 
             for obj in response_obj:
                 id_resp_obj = rp.find_id_by_name(obj)
-                id_resp_obj = rp.add_new(obj) if not id_resp_obj else id_resp_obj
+                id_resp_obj = rp.add(obj) if not id_resp_obj else id_resp_obj
                 cur.execute(f"INSERT INTO INDICATORS_AND_RESPONSE_OBJ VALUES ({indicator_title_id}, {id_resp_obj})")
 
 

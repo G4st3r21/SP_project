@@ -55,13 +55,13 @@ def table_parsing():
             id_event = id_event[:-1] if id_event[-1] == '.' else id_event
             event = " ".join(str(row[1].value).split()[1:])
 
-            period_id = ImplementationPeriod.add_new(row[2].value)
+            period_id = ImplementationPeriod.add(row[2].value)
 
-            result_id = ExpectedResult.add_new(row[3].value)
+            result_id = ExpectedResult.add(row[3].value)
 
             gp_name, fin_source = cell_gp_fin_parsing(row[4])
             gp_id = Gosprogram.add_new(gp_name) if gp_name != 'null' else 'Null'
-            fin_source_id = FinancingSource.add_new(fin_source) if fin_source != 'null' else 'Null'
+            fin_source_id = FinancingSource.add(fin_source) if fin_source != 'null' else 'Null'
 
             response_obj = [obj.capitalize() for obj in str(row[5].value).split(';\n')]
             AllEvents.add_new(id_event, id_sub_aim, period_id, result_id, fin_source_id, gp_id, event)
@@ -69,7 +69,7 @@ def table_parsing():
             commit_all()
 
             for r_obj in response_obj:
-                r_obj_id = ResponseObj.add_new(r_obj)
+                r_obj_id = ResponseObj.add(r_obj)
                 print(id_event, r_obj_id)
                 print(AllEvents.get_all_by_id(id_event))
                 # cur.execute(f"INSERT INTO public.events_and_response_obj VALUES ('{id_event}', {r_obj_id})")
