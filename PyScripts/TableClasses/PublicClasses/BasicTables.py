@@ -46,6 +46,7 @@ class BasicTable:
 
         return self.find_id_by_name(title)
 
+
     # Возвращает True, если объект по указанному id или title был найден и удален
     # Иначе False
     def del_obj(self, title=None, obj_id=None) -> bool:
@@ -81,4 +82,33 @@ class BasicTableWithoutSerialType(BasicTable):
         return obj_id
 
 
-# GrowthPointNames = BasicTable('growth_point_names', 'growth_point_title', cur, conn)
+class BasicTable3(BasicTable):
+    def __init__(self, table_name, first_table_title, second_table_title, cur, conn):
+        super().__init__(table_name=table_name, table_title=[first_table_title, second_table_title], cur=cur, conn=conn)
+
+    def find_id_by_name(self, title: str) -> int:
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {self.title[1]} like '{title}'")
+        obj = self.cur.fetchall()
+
+        return obj[0][0] if obj else False
+
+    def find_name_by_id(self, obj_id: int) -> int:
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE id = {obj_id}")
+        obj = self.cur.fetchall()
+
+        return obj[0][2] if obj else False
+
+    def add(self, first_title, second_title) -> int:
+        obj_id = self.find_id_by_name(second_title)
+        if obj_id:
+            return obj_id
+
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} ORDER BY id")
+        obj_id = self.cur.fetchall()
+        if not obj_id[-1]:
+            obj_id = 1
+        else:
+            obj_id = obj_id[-1][0] + 1
+        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({id}, {first_title}, '{second_title}')")
+
+        return obj_id
