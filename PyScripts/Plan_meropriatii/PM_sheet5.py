@@ -27,7 +27,6 @@ def cell_task_id_parsing(cell):
     elif "СЦ" in value:
         sub_aim_id = cell.value if cell.value[-1] != '.' else cell.value[:-1]
         return sub_aim_id, 0
-    print(cell.value)
 
 
 def table_parsing():
@@ -40,7 +39,6 @@ def table_parsing():
                 id_sub_aim, id_task = cell_task_id_parsing(row[0])
             id_event = str(growth_point_id) + '.' + str(row[1].value).split()[0]
             id_event = id_event[:-1] if id_event[-1] == '.' else id_event
-            print(id_sub_aim, id_event)
             event = " ".join(str(row[1].value).split()[1:])
 
             period_id = ImplementationPeriod.add_new(row[2].value)
