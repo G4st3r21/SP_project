@@ -1,59 +1,90 @@
-from PyScripts.base.base_functions import *
+# from PyScripts.base.base_functions import *
+# from PyScripts.TableClasses.BasicTables import BasicTableWithoutSerialType, BasicTable
+# from PyScripts.TableClasses.Events import AllEvents
+# from PyScripts.TableClasses.Gosprogram import Gosprogram
+#
+#
+def cell_gp_fin_parsing(cell):
+    strk = cell.value
+    if strk is None:
+        return 'Null', 'Null'
+    if 'региональный проект' in strk.lower():
+        gp_names = 'См. "План мероприятий(т. №3)" ячейка ' + str(
+            cell.coordinate)
 
-
-def cell_gp_fin_parsing(strk):
+        return gp_names, 'Null'
     if '"' in strk:
-        gp_name = strk.split('"')[1]
-    else:
-        gp_name = 'Null'
-    if "," in strk.split('"')[-1] and len(strk.split('"')) > 1:
-        fin_source = str(strk.split('"')[-1])[1:].lower()
-    else:
-        fin_source = strk
+        gp_names = strk.split('"')
+        fin_source = 'федеральный бюджет, областной бюджет' if 'федеральный бюджет' in strk.lower() \
+                                                               and 'областной бюджет' in strk.lower() else \
+            'областной бюджет' if 'областной бюджет' in strk.lower() else \
+                'федеральный бюджет' if 'федеральный бюджет' in strk.lower() else 'Null'
+        gp_names = '; '.join([gp_name for gp_name in gp_names[1:-1:2] if len(gp_name) > 3]) if len(gp_names) > 3 else gp_names[1]
 
-    return gp_name, fin_source
+        return gp_names, fin_source.replace('\n', ' ').lower()
+    if 'Государственные программы,' in strk:
+        fin_source = 'федеральный бюджет, областной бюджет' if 'федеральный бюджет' in strk.lower() \
+                                                               and 'областной бюджет' in strk.lower() else \
+            'областной бюджет' if 'областной бюджет' in strk.lower() else \
+                'федеральный бюджет' if 'федеральный бюджет' in strk.lower() else 'Null'
+        gp_names = strk if 'бюджет' not in strk else ','.join([i for i in strk.split(',') if 'бюджет' not in i])
 
+        return gp_names, fin_source.replace('\n', ' ').lower()
 
-def table_parsing():
-    id_period, id_result = 0, 0
-    periods, results = [], []
-    for row in rows:
-        if str(row[0].value)[:2] == 'СЦ':
-            id_sub_aim = str(row[0].value).split()[0]
-        else:
-            id_event = str(row[1].value).split()[0]
-            event = " ".join(str(row[1].value).split()[1:])
-
-            period = row[2].value
-            if period[:50] not in periods:
-                id_period += 1
-                periods.append(period[:50])
-            else:
-                temp_id_period = cur.execute(
-                    f"SELECT * FROM implementation_period WHERE period LIKE {period}").fetchall()[0]
-
-            result = row[3].value
-            if results[:50] not in results:
-                id_result += 1
-                results.append(result[:50])
-            else:
-                temp_id_result = cur.execute(
-                    f"SELECT * FROM expected_result WHERE result LIKE {result}").fetchall()[0]
-
-            gp_name, fin_source = cell_gp_fin_parsing(row[4].value)
-            has_that_gp = cur.execute(
-                f"SELECT * FROM gosprogram WHERE gosprogram LIKE {gp_name}").fetchall()
-            if has_that_gp:
-                gp_id = has_that_gp[0]
-            else:
-                char_gp_id = cur.execute(
-                    f"SELECT * FROM gosprogram").fetchall()[-1][0]
-                gp_id = char_index_from_number(char_index_from_number_reversed(char_gp_id) + 1)
-                cur.execute(f"INSERT INTO gosprogram VALUES ('{gp_id}', '{gp_name}')")
-
-            response_obj = [obj.capitalize() for obj in str(row[5].value).split(';\n')]
-
-
-cols, rows, first_str_number, cur, conn = parser_init("План мероприятий.xlsx", 3)
-table_parsing()
-conn.commit()
+    return 'Null', strk.replace('\n', ' ').lower()
+#
+#
+# def commit_all():
+#     ResponseObj.commit()
+#     ImplementationPeriod.commit()
+#     ExpectedResult.commit()
+#     FinancingSource.commit()
+#     AllEvents.commit()
+#     Gosprogram.commit()
+#
+#
+# def table_parsing():
+#     _ = 0
+#     for row in rows:
+#         if str(row[0].value)[:2] == 'СЦ':
+#             id_sub_aim = str(row[0].value).split()[0]
+#             id_sub_aim = id_sub_aim[:-1] if id_sub_aim[-1] == '.' else id_sub_aim
+#         else:
+#             id_event = str(row[1].value).split()[0]
+#             id_event = id_event[:-1] if id_event[-1] == '.' else id_event
+#             event = " ".join(str(row[1].value).split()[1:])
+#
+#             period_id = ImplementationPeriod.add_new(row[2].value)
+#
+#             result_id = ExpectedResult.add_new(row[3].value)
+#
+#             gp_name, fin_source = cell_gp_fin_parsing(row[4])
+#             gp_id = Gosprogram.add_new(gp_name) if gp_name != 'null' else 'Null'
+#             fin_source_id = FinancingSource.add_new(fin_source) if fin_source != 'null' else 'Null'
+#
+#             response_obj = [obj.capitalize() for obj in str(row[5].value).split(';\n')]
+#             AllEvents.add_new(id_event, id_sub_aim, period_id, result_id, fin_source_id, gp_id, event)
+#
+#             commit_all()
+#
+#             for r_obj in response_obj:
+#                 r_obj_id = ResponseObj.add_new(r_obj)
+#                 print(id_event, r_obj_id)
+#                 print(AllEvents.get_all_by_id(id_event))
+#                 cur.execute(f"INSERT INTO public.events_and_response_obj VALUES ('{id_event}', {r_obj_id})")
+#                 print("отладочный принт")
+#
+#             print(_)
+#             _ += 1
+#
+#
+# cols, rows, cur, conn = parser_init("План мероприятий.xlsx", sheet_number=3, first_str_number=2)
+# ResponseObj = BasicTableWithoutSerialType('response_obj', 'response_obj', cur, conn)
+# ImplementationPeriod = BasicTableWithoutSerialType('implementation_period', 'period', cur, conn)
+# ExpectedResult = BasicTable('expected_result', 'result', cur, conn)
+# FinancingSource = BasicTableWithoutSerialType('financing_source', 'source', cur, conn)
+# AllEvents = AllEvents(cur, conn)
+# Gosprogram = Gosprogram(cur, conn)
+# table_parsing()
+# commit_all()
+# conn.commit()

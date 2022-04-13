@@ -1,0 +1,22 @@
+drop table GROWTH_POINT;
+
+CREATE TABLE GROWTH_POINT_NAMES (
+    id SERIAL PRIMARY KEY,
+    growth_point_title TEXT
+);
+
+CREATE TABLE GROWTH_POINT (
+    id TEXT PRIMARY KEY,
+    sub_aim_id TEXT REFERENCES strategy_sub_aim(id) NOT NULL,
+    task_id TEXT REFERENCES tasks(id),
+    id_period INTEGER REFERENCES IMPLEMENTATION_PERIOD(id) NOT NULL,
+    id_result INTEGER REFERENCES EXPECTED_RESULT(id),
+    id_fin_source INTEGER REFERENCES FINANCING_SOURCE(id),
+    id_prog TEXT REFERENCES GOSPROGRAM(id),
+    title TEXT NOT NULL
+);
+
+CREATE TABLE GROWTH_POINT_AND_RESPONSE_OBJ (
+    gp_id TEXT NOT NULL,
+    id_response_obj INTEGER NOT NULL
+);

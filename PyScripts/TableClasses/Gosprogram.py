@@ -27,10 +27,13 @@ def number_from_char_index(str_id):
 
 
 class Gosprogram:
-    def __init__(self):
+    def __init__(self, cur, conn):
         self.table_name = "gosprogram"
         self.schema = "public"
-        self.cur, self.conn = db_conn()
+        self.cur, self.conn = cur, conn
+
+    def commit(self):
+        self.conn.commit()
 
     # Возвращает id ответственного объекта по его title
     # False, если такого объекта нет
@@ -54,12 +57,12 @@ class Gosprogram:
     # Добавление нового объекта только по title
     # Возвращает id объекта
     def add_new(self, title):
+        obj_id = self.find_id_by_name(title)
+        if obj_id:
+            return obj_id
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} ORDER BY length(id), id")
         gp_id = char_index_from_number(number_from_char_index(self.cur.fetchall()[-1][0]) + 1)
         self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ('{gp_id}', '{title}')")
-        self.conn.commit()
 
         return gp_id
 
-
-gp = Gosprogram()
