@@ -3,7 +3,7 @@ from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTableWithoutSe
 
 class GosprogramTasks(BasicTableWithoutSerialType):
     def __init__(self, cur, conn):
-        super().__init__(table_name='gosprogram_tasks', table_title='id_task', cur=cur, conn=conn)
+        super().__init__(table_name='tasks', table_title='task', cur=cur, conn=conn)
 
     def add(self, cyr_id, title) -> int:
         obj_id = self.find_id_by_name(title)
@@ -12,7 +12,7 @@ class GosprogramTasks(BasicTableWithoutSerialType):
 
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} ORDER BY id")
         obj_id = self.cur.fetchall()
-        if not obj_id[-1]:
+        if not obj_id:
             obj_id = 1
         else:
             obj_id = obj_id[-1][0] + 1

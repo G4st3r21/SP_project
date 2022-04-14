@@ -34,14 +34,15 @@ class BasicTable:
 
     # Добавление нового объекта только по title (c проверкой на наличие в таблице)
     # Возвращает id
-    def add(self, title: str) -> int:
+    def add(self, title: str, is_int=False) -> int:
         obj_id = self.find_id_by_name(title)
         if obj_id:
             return obj_id
+        title = f"'{title}'" if not is_int else f'{title}'
         if self.isEmpty:
-            self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name}(id, {self.title}) VALUES (1, '{title}')")
+            self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name}(id, {self.title}) VALUES (1, {title})")
         else:
-            self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name}({self.title}) VALUES ('{title}')")
+            self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name}({self.title}) VALUES ({title})")
         self.isEmpty = False
 
         return self.find_id_by_name(title)
@@ -73,7 +74,7 @@ class BasicTableWithoutSerialType(BasicTable):
 
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} ORDER BY id")
         obj_id = self.cur.fetchall()
-        if not obj_id[-1]:
+        if not obj_id:
             obj_id = 1
         else:
             obj_id = obj_id[-1][0] + 1
@@ -105,10 +106,10 @@ class BasicTable3(BasicTable):
 
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} ORDER BY id")
         obj_id = self.cur.fetchall()
-        if not obj_id[-1]:
+        if not obj_id:
             obj_id = 1
         else:
             obj_id = obj_id[-1][0] + 1
-        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({id}, {first_title}, '{second_title}')")
+        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, {first_title}, '{second_title}')")
 
         return obj_id
