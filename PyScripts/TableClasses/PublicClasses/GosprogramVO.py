@@ -1,27 +1,39 @@
 from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTableWithoutSerialType
 
 
-class GosprogramVO(BasicTableWithoutSerialType):
+class GosprogramVO:
     def __init__(self, cur, conn):
-        super().__init__(table_name='gosprogram_vo', table_title='title_prog', cur=cur, conn=conn)
+        self.table_name = "gosprogram_vo"
+        self.schema = "public"
+        self.cur, self.conn = cur, conn
 
-    def find_id_by_name(self, title: str) -> str:
-        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {self.title} like '{title}'")
-        obj = self.cur.fetchall()
+    def commit(self):
+        self.conn.commit()
 
-        return obj[0][0] if obj else False
+    def get_id_by_name(self, title):
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE id_prog like '{title}'")
+        main_event_id = self.cur.fetchall()
 
-    def find_name_by_id(self, obj_id: str) -> str:
-        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE id like '{obj_id}'")
-        obj = self.cur.fetchall()
+        return main_event_id[0][0] if main_event_id else False
 
-        return obj[0][1] if obj else False
+    def get_all_by_id(self, obj_id):
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE id = '{obj_id}'")
+        event = self.cur.fetchall()
 
-    def add_new(self, id_obj, title, ) -> str:
-        obj_id = self.find_id_by_name(title)
+        return event[0] if event else False
+
+    def add(self, id_prog, id_response, id_ind_rf, id_ind_vo):
+        obj_id = self.get_id_by_name(id_prog)
         if obj_id:
             return obj_id
-        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ('{id_obj}', '{title}')")
-        self.isEmpty = False
 
-        return id_obj
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} ORDER BY id")
+        obj_id = self.cur.fetchall()
+        if not obj_id:
+            obj_id = 1
+        else:
+            obj_id = obj_id[-1][0] + 1
+        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, "
+                         f"'{id_prog}', {id_response}, {id_ind_rf}, {id_ind_vo})")
+
+        return obj_id
