@@ -1,6 +1,3 @@
-from PyScripts.base.base_functions import db_conn
-
-
 class IndicationsRFTarget:
     def __init__(self, cur, conn):
         self.table_name = "indications_rf_target"

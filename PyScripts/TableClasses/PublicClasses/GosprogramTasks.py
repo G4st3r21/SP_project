@@ -1,7 +1,7 @@
-from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTableWithoutSerialType
+from PyScripts.TableClasses.PublicClasses.SPTable import SPTable
 
 
-class GosprogramTasks(BasicTableWithoutSerialType):
+class GosprogramTasks(SPTable):
     def __init__(self, cur, conn):
         super().__init__(table_name='tasks', table_title='task', cur=cur, conn=conn)
 

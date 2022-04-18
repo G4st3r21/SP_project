@@ -1,7 +1,7 @@
-from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTable
+from PyScripts.TableClasses.PublicClasses.SPTable import SPTable
 
 
-class AllEvents(BasicTable):
+class AllEvents(SPTable):
     def __init__(self, year, cur, conn):
         super().__init__(table_name='all_events'+year, table_title='events', cur=cur, conn=conn)
         self.schema = 'Education'

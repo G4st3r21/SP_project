@@ -1,6 +1,3 @@
-from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTableWithoutSerialType
-
-
 class GosprogramVO:
     def __init__(self, cur, conn):
         self.table_name = "gosprogram_vo"

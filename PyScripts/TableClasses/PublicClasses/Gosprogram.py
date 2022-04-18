@@ -1,6 +1,3 @@
-from PyScripts.base.base_functions import db_conn
-
-
 def char_index_from_number(number):
     if isinstance(number, str):
         n = int(number, 10)

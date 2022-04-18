@@ -1,4 +1,4 @@
-from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTableWithoutSerialType, BasicTable
+from PyScripts.TableClasses.PublicClasses.SPTable import BasicTableWithoutSerialType, SPTable
 from PyScripts.base.base_functions import *
 from PyScripts.TableClasses.PublicClasses.GrowthPoints import GrowthPoint
 from PyScripts.TableClasses.PublicClasses.Gosprogram import Gosprogram
@@ -63,9 +63,9 @@ def table_parsing():
 cols, rows, cur, conn = parser_init("План мероприятий.xlsx", sheet_number=5, first_str_number=3)
 ResponseObj = BasicTableWithoutSerialType('response_obj', 'response_obj', cur, conn)
 ImplementationPeriod = BasicTableWithoutSerialType('implementation_period', 'period', cur, conn)
-ExpectedResult = BasicTable('expected_result', 'result', cur, conn)
+ExpectedResult = SPTable('expected_result', 'result', cur, conn)
 FinancingSource = BasicTableWithoutSerialType('financing_source', 'source', cur, conn)
-GrowthPointNames = BasicTable('growth_point_names', 'growth_point_title', cur, conn)
+GrowthPointNames = SPTable('growth_point_names', 'growth_point_title', cur, conn)
 Gosprogram = Gosprogram(cur, conn)
 GrowthPoint = GrowthPoint(cur, conn)
 table_parsing()

@@ -1,7 +1,4 @@
-from PyScripts.base.base_functions import db_conn
-
-
-class AllEvents:
+class AllEvents():
     def __init__(self, cur, conn):
         self.table_name = "all_events"
         self.schema = "public"

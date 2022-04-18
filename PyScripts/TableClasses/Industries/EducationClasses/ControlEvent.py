@@ -1,7 +1,7 @@
-from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTable
+from PyScripts.TableClasses.PublicClasses.SPTable import SPTable
 
 
-class ControlEvent(BasicTable):
+class ControlEvent(SPTable):
     def __init__(self, cur, conn):
         super().__init__(table_name='control_event2020', table_title='control_event', cur=cur, conn=conn)
 

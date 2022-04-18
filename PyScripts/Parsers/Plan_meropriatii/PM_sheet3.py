@@ -1,5 +1,5 @@
 from PyScripts.base.base_functions import *
-from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTableWithoutSerialType, BasicTable
+from PyScripts.TableClasses.PublicClasses.SPTable import BasicTableWithoutSerialType, SPTable
 from PyScripts.TableClasses.PublicClasses.Events import AllEvents
 from PyScripts.TableClasses.PublicClasses.Gosprogram import Gosprogram
 
@@ -82,7 +82,7 @@ def table_parsing():
 cols, rows, cur, conn = parser_init("План мероприятий.xlsx", sheet_number=3, first_str_number=2)
 ResponseObj = BasicTableWithoutSerialType('response_obj', 'response_obj', cur, conn)
 ImplementationPeriod = BasicTableWithoutSerialType('implementation_period', 'period', cur, conn)
-ExpectedResult = BasicTable('expected_result', 'result', cur, conn)
+ExpectedResult = SPTable('expected_result', 'result', cur, conn)
 FinancingSource = BasicTableWithoutSerialType('financing_source', 'source', cur, conn)
 AllEvents = AllEvents(cur, conn)
 Gosprogram = Gosprogram(cur, conn)
