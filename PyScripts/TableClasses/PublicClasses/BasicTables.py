@@ -103,10 +103,8 @@ class BasicTable3(BasicTable):
         obj_id = self.find_id_by_name(second_title)
         if obj_id:
             return obj_id
-        print(obj_id)
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} ORDER BY id")
         obj_id = self.cur.fetchall()
-        print(obj_id)
         if not obj_id:
             obj_id = 1
         else:
