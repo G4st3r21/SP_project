@@ -17,60 +17,60 @@ def commit_all():
     ResponseObj.commit()
     GosprogramVO.commit()
 
+def format_title(str):
+    if '\n' in str and str[-1] != '\n':
+        str.replace('\n', ' ')
+    elif str[-1] == '\n':
+        str.replace('\n', '')
+
+    if str[-1] == '.':
+        str.replace('.', '')
+
+    # str[0].capitalize()
+
+    return ' '.join(str.split())
 
 def table_parsing():
     for row in rows:
         if row[0].value is not None:
             gp_id = int(row[1].value)
 
-            cyr = row[2].value.capitalize()
+            cyr = format_title(row[2].value)
             cyr_id = CYR.add(cyr)
 
-            task = ' '.join(row[3].value.split()[1:])
+            task = format_title(' '.join(row[3].value.split()[1:]))
             task_id = GosprogramTasks.add(cyr_id, task)
 
-            title_rf = row[4].value
-            title_rf_id = IndicationsRF.add(task_id, title_rf)
+            ind_rf = format_title(row[4].value)
+            ind_rf_id = IndicationsRF.add(task_id, ind_rf)
 
-            response = row[7].value
+            response = format_title(row[7].value)
             response_id = ResponseObj.add(response)
-            print(response_id)
 
-            title_vo = row[5].value.capitalize()
-            prog_id = Gosprogram.add_new(title_vo)
-            title_vo_id = IndicationsVO.add(response_id, prog_id)
+            prog = format_title(row[5].value)
+            prog_id = Gosprogram.add_new(prog)
 
-            IndicationsRFVO.add(title_rf_id, title_vo_id)
+            ind_vo = format_title(row[6].value)
+            ind_vo_id = IndicationsVO.add(response_id, ind_vo)
 
-            prog_vo_id = GosprogramVO.add(prog_id, response_id, title_rf_id, title_vo_id)
-            #
-            # target = row[6].value
-            # target_id = TargetGosprogramVO.add(target)
-            #
-            # GosprogramTarget.add(prog_id, target_id)
-            #
-            # IndicationsRFTarget.add(title_rf_id, target_id)
+            IndicationsRFVO.add(ind_rf_id, ind_vo_id)
+
+            prog_vo_id = GosprogramVO.add(prog_id, response_id, ind_rf_id, ind_vo_id)
 
             commit_all()
 
-            # print(title_prog, response_id, title_rf_id, title_vo_id)
 
 cols, rows, cur, conn = parser_init("ЦУР и ГП ВО_показатели.xlsx", sheet_number=1, first_str_number=6)
+Gosprogram = Gosprogram(cur, conn)
 
 CYR = BasicTableWithoutSerialType('cyr', 'title_cyr', cur, conn)
 GosprogramTasks = GosprogramTasks(cur, conn)
 IndicationsRF = BasicTable3('indications_rf', 'id_task', 'ind_title_rf', cur, conn)
-Gosprogram = Gosprogram(cur, conn)
-IndicationsVO = BasicTable3('indications_vo', 'id_task', 'id_title_vo', cur, conn)
+IndicationsVO = BasicTable3('indications_vo', 'id_task', 'ind_title_vo', cur, conn)
 IndicationsRFVO = IndicationsRFVO(cur, conn)
 ResponseObj = BasicTableWithoutSerialType('response_obj', 'response_obj', cur, conn)
 
 GosprogramVO = GosprogramVO(cur, conn)
-
-TargetGosprogramVO = BasicTableWithoutSerialType('target_gosprogram_vo', 'target', cur, conn)
-GosprogramTarget = GosprogramTarget(cur, conn)
-
-IndicationsRFTarget = IndicationsRFTarget(cur, conn)
 
 table_parsing()
 commit_all()
