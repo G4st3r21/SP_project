@@ -10,7 +10,7 @@ class IndicationsRFTarget:
     def commit(self):
         self.conn.commit()
 
-    def get_id_by_id_ind_rf(self, id_target):
+    def get_id_by_id_target(self, id_target):
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE id_target = {id_target}")
         main_event_id = self.cur.fetchall()
 

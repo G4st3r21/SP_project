@@ -31,9 +31,10 @@ def table_parsing():
             prog_id = Gosprogram.add_new(prog)
 
             target = row[5].value
+            commit_all()
             if target[0] == '1':
-                for i in target.split('\n'):
-                    target_id = TargetGosprogramVO.add(' '.join(i.split()[1:]))
+                for value_part in target.split('\n'):
+                    target_id = TargetGosprogramVO.add(' '.join(value_part.split()[1:]))
 
                     GosprogramTarget.add(prog_id, target_id)
 
@@ -47,11 +48,9 @@ def table_parsing():
                 GosprogramTarget.add(prog_id, target_id)
 
                 ind_rf_id = IndicationsRF.find_all_by_task_id(task_id)
-
                 if ind_rf_id:
                     for obj in ind_rf_id:
-                        IndicationsRFTarget.add(obj[0], target_id)
-            commit_all()
+                        temp_id = IndicationsRFTarget.add(obj[0], target_id)
 
 cols, rows, cur, conn = parser_init("ЦУР и ГП ВО_цели.xlsx", sheet_number=1, first_str_number=6)
 
