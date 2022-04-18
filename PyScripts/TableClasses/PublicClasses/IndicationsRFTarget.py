@@ -10,8 +10,8 @@ class IndicationsRFTarget:
     def commit(self):
         self.conn.commit()
 
-    def get_id_by_name(self, title):
-        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE id_target like '{title}'")
+    def get_id_by_id_target(self, id_target):
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE id_target = {id_target}")
         main_event_id = self.cur.fetchall()
 
         return main_event_id[0][0] if main_event_id else False
@@ -23,10 +23,10 @@ class IndicationsRFTarget:
         return event[0] if event else False
 
     def add(self, id_ind_rf, id_target):
-        event_id = self.get_all_by_id(id_ind_rf)
+        event_id = self.get_id_by_id_target(id_target)
         if event_id:
             return event_id
         self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES"
                          f" ({id_ind_rf}, {id_target})")
 
-        return id_ind_rf
+        return self.get_id_by_id_target(id_target)

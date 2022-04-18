@@ -99,6 +99,11 @@ class BasicTable3(BasicTable):
 
         return obj[0][2] if obj else False
 
+    def find_all_by_task_id(self, obj_id: int):
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE id_task = {obj_id}")
+        obj = self.cur.fetchall()
+        return obj if obj else False
+
     def add(self, first_title, second_title) -> int:
         obj_id = self.find_id_by_name(second_title)
         if obj_id:
