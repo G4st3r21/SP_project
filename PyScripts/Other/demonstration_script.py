@@ -1,5 +1,5 @@
 from datetime import datetime as dt
-from base_functions import *
+from PyScripts.base.base_functions import *
 
 
 def sql_work(task_id):
@@ -13,7 +13,7 @@ def sql_work(task_id):
 
 
 def xlsx_work(task_id):
-    wb = xlsx_connect("План мероприятий.xlsx")
+    wb = xlsx_connect("../Parsers/Plan_meropriatii/План мероприятий.xlsx")
     all_ws = wb.worksheets
     ws_1 = all_ws[0]
     ws_4 = all_ws[3]

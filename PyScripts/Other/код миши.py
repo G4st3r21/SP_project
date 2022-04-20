@@ -1,7 +1,7 @@
 from openpyxl import load_workbook
 import psycopg2
 
-table_names = ["CYR", "TASKS", "INDICATIONS_RF", "RESPONSE", "INDICATIONS_VO", "INDICATIONS_RF_VO", "GOSPROGRAM_VO",
+table_names = ["CUR", "TASKS", "INDICATIONS_RF", "RESPONSE", "INDICATIONS_VO", "INDICATIONS_RF_VO", "GOSPROGRAM_VO",
                "TARGET_GOSPROGRAM_VO", "GOSPROGRAM_TASKS", "GOSPROGRAM_TARGET", "INDICATIONS_RF_TARGET"]
 
 
@@ -37,7 +37,7 @@ def take_data_from_excel(sheet, cur, conn):
     # for i in range(0, len(cyr_list)):
     #     print(count)
     #
-    #     # cur.execute(f"INSERT INTO CYR VALUES ({set_index_list[count]}, '{cyr_list[i]}')")
+    #     # cur.execute(f"INSERT INTO CUR VALUES ({set_index_list[count]}, '{cyr_list[i]}')")
     #     count += 1
     # conn.commit()
 

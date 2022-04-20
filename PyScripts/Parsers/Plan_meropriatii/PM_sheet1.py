@@ -1,4 +1,4 @@
-from base_functions import *
+from PyScripts.base.base_functions import *
 
 test_file = "План мероприятий.xlsx"
 table_names = ["strategy_sub_aim", "tasks"]
