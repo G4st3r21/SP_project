@@ -6,7 +6,7 @@ class GosprogramTasks(SPTable):
         super().__init__(table_name='tasks', table_title='task', cur=cur, conn=conn)
 
     def add(self, cyr_id, title) -> int:
-        obj_id = self.find_id_by_name(title)
+        obj_id = self.get_id_by_name(title)
         if obj_id:
             return obj_id
 

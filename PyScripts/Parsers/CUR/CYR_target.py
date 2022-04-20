@@ -17,10 +17,10 @@ def table_parsing():
     for row in rows:
         if row[0].value is not None:
             cyr = row[2].value.capitalize()
-            cyr_id = CYR.find_id_by_name(cyr)
+            cyr_id = CYR.get_id_by_name(cyr)
 
             task = ' '.join(row[3].value.split()[1:])
-            task_id = GosprogramTasks.find_id_by_name(task)
+            task_id = GosprogramTasks.get_id_by_name(task)
 
             title_vo = row[4].value
             print(title_vo)

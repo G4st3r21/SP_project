@@ -12,20 +12,19 @@ class SPTableArbitrary(SPTable):
         self.cur.execute(
             f"SELECT * FROM information_schema.columns WHERE table_name = '{self.table_name}' and table_schema = '{self.schema}'")
         columns = [(column[3], column[7]) for column in self.cur.fetchall()]
-        print(columns)
 
         return columns
 
-    def find_name_by_id(self, obj_id):
+    def get_name_by_id(self, obj_id):
         sys.exit("Error: method 'find_name_by_id' can't be called by 'SPTableArbitrary' class\n")
 
-    def find_id_by_name(self, title):
+    def get_id_by_name(self, title):
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {self.title} like '{title}'")
         obj = self.cur.fetchall()
 
         return obj[0][0] if obj else False
 
-    def find_by_id(self, obj_id):
+    def get_by_id(self, obj_id):
         id = f"'{obj_id}'" if not self.columns[0][1] != 'integer' else f'{obj_id}'
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE id = {id}")
         obj = self.cur.fetchall()
@@ -34,7 +33,7 @@ class SPTableArbitrary(SPTable):
 
     def add(self, *args):
         title = [arg for arg in args if type(arg) is str][0]
-        obj_id = self.find_id_by_name(title)
+        obj_id = self.get_id_by_name(title)
         if obj_id:
             return obj_id
 

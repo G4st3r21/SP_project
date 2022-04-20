@@ -5,7 +5,7 @@ class ControlEvent(SPTable):
     def __init__(self, cur, conn):
         super().__init__(table_name='control_event2020', table_title='control_event', cur=cur, conn=conn)
 
-    def find_id_by_name(self, title: str) -> int:
+    def get_id_by_name(self, title: str) -> int:
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {self.title} like '{title}'")
         obj = self.cur.fetchall()
 
@@ -25,14 +25,14 @@ class ControlEvent(SPTable):
         if obj:
             return obj if obj else False
 
-    def find_name_by_id(self, code: str) -> str:
+    def get_name_by_id(self, code: str) -> str:
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE code = '{code}'")
         obj = self.cur.fetchall()
 
         return obj[0][1] if obj else False
 
     def add(self, obj_code, code_main_event, control_event):
-        obj_id = self.find_id_by_name(control_event)
+        obj_id = self.get_id_by_name(control_event)
         if obj_id:
             return obj_id
         self.cur.execute(
