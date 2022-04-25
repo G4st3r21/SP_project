@@ -55,6 +55,7 @@ def table_parsing():
 
             # print(title_prog, response_id, title_rf_id, title_vo_id)
 
+
 cols, rows, cur, conn = parser_init("ЦУР и ГП ВО_показатели.xlsx", sheet_number=1, first_str_number=6)
 
 CYR = BasicTableWithoutSerialType('cyr', 'title_cyr', cur, conn)
