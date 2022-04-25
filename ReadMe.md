@@ -43,7 +43,7 @@ from PyScripts.TableClasses.PublicClasses.SPTable import SPTable
 Возьмем в пример часто используемую таблицу ответственных объектов(с департаментами).
 Её структура выглядит следующим образом:
 
-![img.png](ReadMe Images/response_obj_table.png)
+![img.png](ReadMeImages/response_obj_table.png)
 
 Мы понимаем, что она подходит условиям класса SPTable и создаем объект этого класса
 (не заполняем аргумент <b>schema</b>, т.к. она <b>public</b>)
@@ -116,7 +116,7 @@ from PyScripts.TableClasses.PublicClasses.SPTableArbitrary import SPTableArbitra
 Возьмем в пример таблицу контрольных событий за 2020 год отрасли Развития образования.
 Её структура выглядит следующим образом:
 
-![img.png](ReadMe Images/control_event_table.png)
+![img.png](ReadMeImages/control_event_table.png)
 
 Мы понимаем, что она не удовлетворят условиям класса SPTable и создаем объект класса SPTableArbitrary
 (заполняем аргумент <b>schema</b>, т.к. она из <b>Education</b>)

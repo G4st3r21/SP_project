@@ -39,7 +39,6 @@ class SPTableArbitrary(SPTable):
             return obj_id
 
         request_args = ", ".join([f"'{arg}'" if type(arg) is str else str(arg) for arg in args])
-        request_columns = ', '.join([column[0] for column in self.columns])
-        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name}({request_columns}) VALUES ({request_args})")
+        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({request_args})")
 
         return args[0]
