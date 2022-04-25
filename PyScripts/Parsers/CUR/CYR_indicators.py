@@ -60,6 +60,7 @@ def table_parsing():
             commit_all()
 
 
+
 cols, rows, cur, conn = parser_init("ЦУР и ГП ВО_показатели.xlsx", sheet_number=1, first_str_number=6)
 Gosprogram = Gosprogram(cur, conn)
 

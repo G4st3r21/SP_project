@@ -1,4 +1,3 @@
-
 class BasicTable:
     def __init__(self, table_name, table_title, cur, conn):
         self.table_name = table_name
@@ -46,7 +45,6 @@ class BasicTable:
         self.isEmpty = False
 
         return self.find_id_by_name(title)
-
 
     # Возвращает True, если объект по указанному id или title был найден и удален
     # Иначе False
@@ -114,6 +112,7 @@ class BasicTable3(BasicTable):
             obj_id = 1
         else:
             obj_id = obj_id[-1][0] + 1
-        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, {first_title}, '{second_title}')")
+        self.cur.execute(
+            f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, {first_title}, '{second_title}')")
 
         return obj_id
