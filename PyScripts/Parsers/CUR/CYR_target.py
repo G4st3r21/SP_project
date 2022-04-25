@@ -1,3 +1,4 @@
+from PyScripts.Parsers.CUR.CYR_indicators import format_title
 from PyScripts.TableClasses.PublicClasses.GosprogramTasks import GosprogramTasks
 from PyScripts.TableClasses.PublicClasses.Gosprogram import Gosprogram
 from PyScripts.TableClasses.PublicClasses.GosprogramTarget import GosprogramTarget
@@ -8,39 +9,52 @@ from PyScripts.base.base_functions import *
 
 
 def commit_all():
+    CYR.commit()
+    GosprogramTasks.commit()
+    IndicationsRF.commit()
+    Gosprogram.commit()
+    GosprogramVO.commit()
     TargetGosprogramVO.commit()
     GosprogramTarget.commit()
     IndicationsRFTarget.commit()
 
-
 def table_parsing():
     for row in rows:
         if row[0].value is not None:
-            cyr = row[2].value.capitalize()
-            cyr_id = CYR.get_id_by_name(cyr)
+            cyr = format_title(row[2].value)
+            cyr_id = CYR.add(cyr)
 
-            task = ' '.join(row[3].value.split()[1:])
-            task_id = GosprogramTasks.get_id_by_name(task)
+            task = format_title(' '.join(row[3].value.split()[1:]))
+            task_id = GosprogramTasks.add(cyr_id, task)
 
-            title_vo = row[4].value
-            print(title_vo)
-            prog_id = Gosprogram.find_id_by_name(title_vo)
+            prog = format_title(row[4].value)
+            prog_id = Gosprogram.add_new(prog)
 
             target = row[5].value
-            target_id = TargetGosprogramVO.add(target)
+            if target[0] == '1':
+                for value_part in target.split('\n'):
+                    target_id = TargetGosprogramVO.add(' '.join(value_part.split()[1:]))
 
-            GosprogramTarget.add(prog_id, target_id)
+                    GosprogramTarget.add(prog_id, target_id)
 
-            # title_rf_id = IndicationsRF.find_id_by_name1(task_id)
+                    ind_rf_id = IndicationsRF.find_all_by_task_id(task_id)
+                    print(ind_rf_id)
 
-            # title_rf_id =
+                    if ind_rf_id:
+                        for obj in ind_rf_id:
+                            IndicationsRFTarget.add(obj[0], target_id)
+                            print(obj[0])
+            else:
+                target_id = TargetGosprogramVO.add(target)
+                GosprogramTarget.add(prog_id, target_id)
 
-            # IndicationsRFTarget.add(title_rf_id, target_id)
-            # print(title_rf_id, target_id)
+                ind_rf_id = IndicationsRF.find_all_by_task_id(task_id)
+                print(ind_rf_id)
+                if ind_rf_id:
+                    for obj in ind_rf_id:
+                        IndicationsRFTarget.add(obj[0], target_id)
+
             commit_all()
-
-            # print(title_prog, response_id, title_rf_id, title_vo_id)
-
 
 cols, rows, cur, conn = parser_init("ЦУР и ГП ВО_цели.xlsx", sheet_number=1, first_str_number=6)
 
@@ -48,8 +62,6 @@ CYR = BasicTableWithoutSerialType('cyr', 'title_cyr', cur, conn)
 GosprogramTasks = GosprogramTasks(cur, conn)
 IndicationsRF = BasicTable3('indications_rf', 'id_task', 'ind_title_rf', cur, conn)
 Gosprogram = Gosprogram(cur, conn)
-IndicationsVO = BasicTable3('indications_vo', 'id_task', 'id_title_vo', cur, conn)
-ResponseObj = BasicTableWithoutSerialType('response_obj', 'response_obj', cur, conn)
 
 GosprogramVO = GosprogramVO(cur, conn)
 
