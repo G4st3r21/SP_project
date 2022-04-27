@@ -9,9 +9,10 @@ class SPTableArbitrary(SPTable):
         self.columns = self.check_columns()
 
     def check_columns(self):
+        schema = self.schema.replace('"', "'")
         self.cur.execute(
             "SELECT * FROM " + '"information_schema"' +
-            ".columns WHERE table_name = '{self.table_name}' and table_schema = '{self.schema}'")
+            f".columns WHERE table_name = '{self.table_name}' and table_schema = {schema}")
         columns = [(column[3], column[7]) for column in self.cur.fetchall()]
 
         return columns
@@ -39,7 +40,7 @@ class SPTableArbitrary(SPTable):
             return obj_id
 
         request_args = ", ".join([f"'{arg}'" if type(arg) is str else str(arg) for arg in args])
-        # request_columns = ', '.join([column[0] for column in self.columns])
+        # request_columns = ', '.join([column[0] for column in self.columns[1:]])
         self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({request_args})")
 
         return args[0]
