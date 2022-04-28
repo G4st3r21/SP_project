@@ -17,9 +17,6 @@ class SPTableArbitrary(SPTable):
 
         return columns
 
-    def get_name_by_id(self, obj_id):
-        sys.exit("Error: method 'find_name_by_id' can't be called by 'SPTableArbitrary' class\n")
-
     def get_id_by_name(self, title):
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {self.title} like '{title}'")
         obj = self.cur.fetchall()
@@ -40,7 +37,10 @@ class SPTableArbitrary(SPTable):
             return obj_id
 
         request_args = ", ".join([f"'{arg}'" if type(arg) is str else str(arg) for arg in args])
-        # request_columns = ', '.join([column[0] for column in self.columns[1:]])
+        request_columns = ', '.join([column[0] for column in self.columns[1:]])
         self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({request_args})")
 
         return args[0]
+
+    def get_name_by_id(self, obj_id):
+        sys.exit("[Error]: Not possible for this class'\n")

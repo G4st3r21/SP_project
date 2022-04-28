@@ -47,13 +47,11 @@ def read_first_str_number():
 def unmerge_all_cells(ws):
     try:
         while len(ws.merged_cells.ranges) > 0:
-            print(ws.merged_cells.ranges[0])
             min_col, min_row, max_col, max_row = range_boundaries(str(ws.merged_cells.ranges[0]))
             top_left_cell_value = ws.cell(row=min_row, column=min_col).value
             ws.unmerge_cells(str(ws.merged_cells.ranges[0]))
             for row in ws.iter_rows(min_col=min_col, min_row=min_row, max_col=max_col, max_row=max_row):
                 for cell in row:
-                    print(cell.coordinate)
                     cell.value = top_left_cell_value
     except Exception:
-        print("ОШИБКА РАЗБИЕНИЯ ЯЧЕЕК")
+        pass
