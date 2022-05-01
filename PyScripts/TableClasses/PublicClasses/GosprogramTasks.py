@@ -16,6 +16,6 @@ class GosprogramTasks(SPTable):
             obj_id = 1
         else:
             obj_id = obj_id[-1][0] + 1
-        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, '{cyr_id}', '{title}')")
+        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, {cyr_id}, '{title}')")
 
         return obj_id

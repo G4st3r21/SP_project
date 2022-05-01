@@ -10,7 +10,8 @@ class SPTableArbitrary(SPTable):
 
     def check_columns(self):
         self.cur.execute(
-            f"SELECT * FROM information_schema.columns WHERE table_name = '{self.table_name}' and table_schema = '{self.schema}'")
+            "SELECT * FROM " + '"information_schema"' +
+            ".columns WHERE table_name = '{self.table_name}' and table_schema = '{self.schema}'")
         columns = [(column[3], column[7]) for column in self.cur.fetchall()]
 
         return columns

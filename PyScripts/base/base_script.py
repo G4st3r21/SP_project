@@ -1,6 +1,6 @@
 from base_functions import *
 
-test_file = "../Parsers/Plan_meropriatii/План мероприятий.xlsx"
+test_file = "../Parsers/PlanMeropriatii/План мероприятий.xlsx"
 table_names = ["strategy_aim", "gosprogram", "aim_and_gosprogram"]
 
 

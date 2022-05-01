@@ -1,6 +1,6 @@
 class SPTable:
     def __init__(self, table_name, table_title, cur, conn, schema='public'):
-        self.schema = schema
+        self.schema = f'"{schema}"'
         self.table_name = table_name
         self.title = table_title
         self.cur, self.conn = cur, conn
@@ -22,7 +22,7 @@ class SPTable:
             return False
 
     def is_empty_table(self):
-        self.cur.execute("SELECT * FROM " + f'"{self.schema}"' + f".{self.table_name}")
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name}")
         obj = self.cur.fetchall()
 
         return False if obj else True
