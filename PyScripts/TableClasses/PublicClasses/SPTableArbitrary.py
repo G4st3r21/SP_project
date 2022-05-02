@@ -30,8 +30,15 @@ class SPTableArbitrary(SPTable):
 
         return obj[0] if obj else False
 
+    def column_index(self, column_title):
+        for column in self.columns:
+            if column_title in column:
+                return self.columns.index(column)
+
+        return -1
+
     def add(self, *args):
-        title = [arg for arg in args if type(arg) is str][0]
+        title = args[self.column_index(self.title)]
         obj_id = self.get_id_by_name(title)
         if obj_id:
             return obj_id

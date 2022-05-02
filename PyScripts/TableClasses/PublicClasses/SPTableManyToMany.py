@@ -47,9 +47,8 @@ class SPTableManyToMany(SPTable):
         return True if obj else False
 
     def add(self, first_title, second_title):
-        if self.find_tuple(first_title, second_title):
-            print(f"[Warning]: This tuple is already in the table '{self.table_name}'")
-        else:
+        if not self.find_tuple(first_title, second_title):
+            # print(f"[Warning]: This tuple is already in the table '{self.table_name}'")
             first_title = f"'{first_title}'" if 'integer' not in self.columns[0][1] else first_title
             second_title = f"'{second_title}'" if 'integer' not in self.columns[0][1] else second_title
             self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({first_title}, {second_title})")
