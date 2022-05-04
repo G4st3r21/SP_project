@@ -55,3 +55,40 @@ def unmerge_all_cells(ws):
                     cell.value = top_left_cell_value
     except Exception:
         pass
+
+def partition(string):
+    parts = string.split()
+    str_list = list()
+    k = 0
+    for i in range(len(parts)):
+        if parts[i][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][1] != '.' and ('.' in parts[i] or ',' in parts[i]):
+            str_list.append(' '.join(parts[k:i + 1]))
+            k = i + 1
+    str_list.append(' '.join(parts[k:]))
+    for j in range(len(str_list)):
+        str_list[j] = str_list[j].replace(str_list[j].split()[0], str_list[j].split()[0].capitalize())
+        if str_list[j][-1] in '.,\n;:-+=?!':
+            str_list[j] = str_list[j][:-1]
+        if str_list[j].split()[0] == 'Врио' or str_list[j].split()[0] == 'врио':
+            str_list[j] = str_list[j].replace(str_list[j].split()[0], 'ВРИО')
+
+    return str_list
+
+def rreplace(s, old, new, occurrence):
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
+
+def format_title(string):
+    if '\n' in string and string[-1] != '\n':
+        string.replace('\n', ' ')
+    elif string[-1] == '\n':
+        string.replace('\n', '')
+
+    if string[-1] == '.':
+        string = rreplace(string, '.', '', 1)
+
+    # str[0].capitalize()
+    string.strip()
+
+    return ' '.join(string.split())
+
