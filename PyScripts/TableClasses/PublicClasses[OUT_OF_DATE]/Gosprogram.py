@@ -62,4 +62,3 @@ class Gosprogram:
         self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ('{gp_id}', '{title}')")
 
         return gp_id
-

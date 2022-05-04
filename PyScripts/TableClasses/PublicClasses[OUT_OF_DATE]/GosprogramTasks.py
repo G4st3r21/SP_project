@@ -1,4 +1,4 @@
-from PyScripts.TableClasses.PublicClasses.SPTable import SPTable
+from PyScripts.TableClasses.SPTables.SPTable import SPTable
 
 
 class GosprogramTasks(SPTable):

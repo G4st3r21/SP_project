@@ -4,7 +4,7 @@ from PyScripts.TableClasses.PublicClasses.Gosprogram import Gosprogram
 from PyScripts.TableClasses.PublicClasses.GosprogramTarget import GosprogramTarget
 from PyScripts.TableClasses.PublicClasses.IndicationsRFTarget import IndicationsRFTarget
 from PyScripts.TableClasses.PublicClasses.GosprogramVO import GosprogramVO
-from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTableWithoutSerialType, BasicTable, BasicTable3
+from PyScripts.TableClasses.PublicClasses.BasicTables import BasicTableWithoutSerialType, BasicTable3
 from PyScripts.base.base_functions import *
 
 

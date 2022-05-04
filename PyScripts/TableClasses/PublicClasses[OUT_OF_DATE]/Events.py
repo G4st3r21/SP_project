@@ -1,6 +1,6 @@
-class GrowthPoint:
+class AllEvents():
     def __init__(self, cur, conn):
-        self.table_name = "growth_point"
+        self.table_name = "all_events"
         self.schema = "public"
         self.cur, self.conn = cur, conn
 
@@ -8,7 +8,7 @@ class GrowthPoint:
         self.conn.commit()
 
     def get_id_by_name(self, title):
-        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE title like '{title}'")
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE sub_event like '{title}'")
         main_event_id = self.cur.fetchall()
 
         return main_event_id[0][0] if main_event_id else False
@@ -19,11 +19,11 @@ class GrowthPoint:
 
         return event[0] if event else False
 
-    def add_new(self, id_event, id_aim, id_task, id_period, id_result, id_source, id_prog, title):
+    def add_new(self, id_event, id_aim, id_period, id_result, id_source, id_prog, title):
         event_id = self.get_all_by_id(id_event)
         if event_id:
             return event_id
         self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES"
-                         f" ('{id_event}', '{id_aim}', '{id_task}', {id_period}, {id_result}, {id_source}, '{id_prog}', '{title}')")
+                         f" ('{id_event}', '{id_aim}', {id_period}, {id_result}, {id_source}, '{id_prog}', '{title}')")
 
         return id_event

@@ -1,4 +1,4 @@
-from PyScripts.TableClasses.PublicClasses.SPTable import BasicTableWithoutSerialType, SPTable
+from PyScripts.TableClasses.SPTables.SPTable import BasicTableWithoutSerialType, SPTable
 from PyScripts.base.base_functions import *
 from PyScripts.TableClasses.PublicClasses.GrowthPoints import GrowthPoint
 from PyScripts.TableClasses.PublicClasses.Gosprogram import Gosprogram
