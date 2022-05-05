@@ -39,14 +39,14 @@ class SPTable:
 
         return False if obj else True
 
-    def __get_id_by_title(self, title):
+    def get_id_by_title(self, title):
         title_name = self.columns[1][0]
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {title_name} like '{title}'")
         obj = self.cur.fetchall()
 
         return obj[0][0] if obj else False
 
-    def __get_title_by_id(self, obj_id):
+    def get_title_by_id(self, obj_id):
         id_name = self.columns[0][0]
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE {id_name} = {obj_id}")
         obj = self.cur.fetchall()
@@ -58,7 +58,7 @@ class SPTable:
             sys.exit(f'Слишком много аргументов для метода "add" таблицы {self.table_name}\n'
                      f'(Ожидалось 1, получено {len(args)})')
 
-        obj_id = self.__get_id_by_title(args[0])
+        obj_id = self.get_id_by_title(args[0])
         if obj_id:
             return obj_id
 
@@ -72,7 +72,7 @@ class SPTable:
                 self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name}({title_name}) VALUES ({title})")
             self.isEmpty = False
 
-            return self.__get_id_by_title(title)
+            return self.get_id_by_title(title)
         else:
             self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} ORDER BY {id_name}")
             obj_id = self.cur.fetchall()
