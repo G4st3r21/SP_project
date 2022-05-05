@@ -76,6 +76,7 @@ def input_answer_and_replace(word, suggest):
 def checking_for_typos(rows):
     from enchant import Dict
     import string
+    from natasha import NamesExtractor, Doc
     dictionary = Dict('ru_RU')
 
     for row in rows:
