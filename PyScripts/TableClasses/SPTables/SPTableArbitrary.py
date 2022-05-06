@@ -15,18 +15,26 @@ class SPTableArbitrary(SPTable):
         return obj[0] if obj else False
 
     def get_by_tuple(self, *args):
+        args = list(args)
         get_args = [f"{self.columns[args.index(arg)][0]} = '{arg}'" if type(
             arg) is str else f"{self.columns[args.index(arg)][0]} = {arg}" for arg in args]
         if len(args) == len(self.columns):
-            self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {' AND '.join(get_args[1:])}")
+            if len(self.columns) == 1:
+                self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {get_args[0]}")
+            else:
+                self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {' AND '.join(get_args[1:])}")
         elif len(args) + 1 == len(self.columns):
-            self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {' AND '.join(get_args)}")
+            if len(self.columns) == 1:
+                sys.exit("В данной таблице нужен хотя бы один аргумент.")
+            else:
+                self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {' AND '.join(get_args)}")
         obj = self.cur.fetchall()
 
         return obj[0][0] if obj else False
 
     def add(self, *args):
-        obj_id = self.get_by_tuple(args)
+        args = list(args)
+        obj_id = self.get_by_tuple(*args)
         if obj_id:
             return obj_id
 

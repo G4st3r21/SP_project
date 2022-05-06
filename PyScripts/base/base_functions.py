@@ -60,19 +60,31 @@ def partition(string):
     parts = string.split()
     str_list = list()
     k = 0
-    for i in range(len(parts)):
-        if parts[i][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][1] != '.' and ('.' in parts[i] or ',' in parts[i]):
+    for i in range(len(parts) - 1):
+        if ((parts[i][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][1] != '.') or
+            (len(parts[i]) >= 5 and parts[i][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][1] == '.' and parts[i][2] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][3] == '.' and parts[i][4] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ')) \
+                and (',' in parts[i] or '.' in parts[i] or parts[i+1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ'):
             str_list.append(' '.join(parts[k:i + 1]))
             k = i + 1
     str_list.append(' '.join(parts[k:]))
     for j in range(len(str_list)):
-        str_list[j] = str_list[j].replace(str_list[j].split()[0], str_list[j].split()[0].capitalize())
-        if str_list[j][-1] in '.,\n;:-+=?!':
+        if not (str_list[j] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ'):
+            str_list[j] = str_list[j].replace(str_list[j].split()[0], str_list[j].split()[0].capitalize())
+        if str_list[j][-1] in '.,;:-+=?!' or str_list[j].endswith('\n'):
             str_list[j] = str_list[j][:-1]
         if str_list[j].split()[0] == 'Врио' or str_list[j].split()[0] == 'врио':
             str_list[j] = str_list[j].replace(str_list[j].split()[0], 'ВРИО')
 
     return str_list
+
+def parts(string, sym):
+    parts = string.split(sym)
+    for i in range(len(parts)):
+        parts[i] = format_title(parts[i]).strip()
+        if parts[i].split()[0] == 'Врио' or parts[i].split()[0] == 'врио':
+            parts[i] = parts[i].replace(parts[i].split()[0], 'ВРИО')
+
+    return parts
 
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
@@ -80,15 +92,16 @@ def rreplace(s, old, new, occurrence):
 
 def format_title(string):
     if '\n' in string and string[-1] != '\n':
-        string.replace('\n', ' ')
+        string = string.replace('\n', ' ')
     elif string[-1] == '\n':
-        string.replace('\n', '')
+        string = string.replace('\n', '')
 
+    string = string.strip()
     if string[-1] == '.':
         string = rreplace(string, '.', '', 1)
 
-    # str[0].capitalize()
-    string.strip()
-
+    string = string.replace(string.split()[0], string.split()[0].capitalize())
+    # string.replace(string[0], string[0].upper())
+    # string.capitalize()
     return ' '.join(string.split())
 
