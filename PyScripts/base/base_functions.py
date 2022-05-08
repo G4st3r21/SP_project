@@ -63,7 +63,7 @@ def partition(string):
     for i in range(len(parts) - 1):
         if ((parts[i][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][1] != '.') or
             (len(parts[i]) >= 5 and parts[i][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][1] == '.' and parts[i][2] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][3] == '.' and parts[i][4] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ')) \
-                and (',' in parts[i] or '.' in parts[i] or parts[i+1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ'):
+                and (',' in parts[i] or '.' in parts[i] or parts[i + 1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 1][1] != '.'):
             str_list.append(' '.join(parts[k:i + 1]))
             k = i + 1
     str_list.append(' '.join(parts[k:]))
@@ -91,7 +91,7 @@ def rreplace(s, old, new, occurrence):
     return new.join(li)
 
 def format_title(string):
-    if '\n' in string and string[-1] != '\n':
+    if '\n' in string and not string.endswith('\n'):
         string = string.replace('\n', ' ')
     elif string[-1] == '\n':
         string = string.replace('\n', '')
