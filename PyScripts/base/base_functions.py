@@ -25,14 +25,13 @@ def xlsx_connect(path):
 
 
 def parser_init(file_name, sheet_number, first_str_number, need_db_conn=True):
-    cur, conn = db_conn(table_name="All Tables") if need_db_conn else None, None
+    cur, conn = db_conn(table_name="All Tables") if need_db_conn else (None, None)
     wb = xlsx_connect(file_name)
     ws = wb.worksheets[sheet_number - 1]
     unmerge_all_cells(ws)
 
     columns = list(ws.columns)
     rows = list(ws.rows)
-
     return (columns, rows[first_str_number - 1:], cur, conn) if need_db_conn else (columns, rows[first_str_number - 1:])
 
 

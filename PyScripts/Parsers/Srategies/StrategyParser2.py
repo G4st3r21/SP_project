@@ -4,13 +4,13 @@ from PyScripts.base.base_functions import parser_init
 
 cols, rows, cur, conn = parser_init('Стратегия.xlsx', 2, 4)
 
-StrategyIndicators = SPTableArbitrary('indicators', 'id', cur, conn, schema='Strategies')
-ResearchArea = SPTable('research_area', 'title_area', cur, conn, schema='Strategies')
-GrowthRates20162011 = SPTableArbitrary('growth_rates_2016_2011', 'id', cur, conn, schema='Strategies')
-PlaceOfVOInd = SPTableArbitrary('place_of_vo_ind', 'id', cur, conn, schema='Strategies')
+StrategyIndicators = SPTableArbitrary('indicators2', cur, conn, schema='Strategies')
+ResearchArea = SPTable('research_area', cur, conn, schema='Strategies')
+GrowthRates20162011 = SPTableArbitrary('growth_rates_2016_2011', cur, conn, schema='Strategies')
+PlaceOfVOInd = SPTableArbitrary('place_of_vo_ind', cur, conn, schema='Strategies')
 
-IndicatorsNames = SPTableArbitrary('indicators_names', 'indicator_title', cur, conn)
-Years = SPTable('years', 'year', cur, conn)
+IndicatorsNames = SPTableArbitrary('indicators_names', cur, conn)
+Years = SPTable('years', cur, conn)
 
 
 def format_indicator(ind: str):
@@ -22,15 +22,15 @@ strategy_indicator_id = 1
 growth_rates_id = 1
 place_of_vo_ind_id = 1
 for row in rows:
-    id2011 = Years.get_id_by_name(2011)
-    id2016 = Years.get_id_by_name(2016)
-    id_RF = None  # Взять из RESEARCH_AREA
-    id_CFO = None  # Взять из RESEARCH_AREA
-    id_VO = None  # Взять из RESEARCH_AREA
+    id2011 = 21
+    id2016 = 1
+    id_RF = ResearchArea.add('RF')  # Взять из RESEARCH_AREA
+    id_CFO = ResearchArea.add('CFO')  # Взять из RESEARCH_AREA
+    id_VO = ResearchArea.add('VO')  # Взять из RESEARCH_AREA
 
-    indicator_title = row[0].value.split(',')[:-1]
+    indicator_title = row[0].value.split(',')[:-1][0]
     indicator_type = row[0].value.split(',')[-1]
-    id_ind_name = IndicatorsNames.add(ind_name_id, indicator_title, indicator_type, 'null')
+    id_ind_name = IndicatorsNames.add(ind_name_id, indicator_title, indicator_type, 'null', conditinon_type='OR')
     ind_name_id += 1 if id_ind_name >= ind_name_id else 0
 
     indicator_2011 = format_indicator(row[1].value)

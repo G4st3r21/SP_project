@@ -3,26 +3,26 @@ import sys
 
 class SPTable:
     def __init__(self, table_name, cur, conn, schema='public'):
-        self.schema = f'"{schema}"'
+        self.schema = f'"{schema}"' if schema != 'public' else schema
         self.table_name = table_name
         self.cur, self.conn = cur, conn
 
-        self.columns = self.check_columns()
-        self.hasSerialID = self.has_serial_id()
-        self.isEmpty = self.is_empty_table()
+        self.columns = self._check_columns()
+        self.hasSerialID = self._has_serial_id()
+        self.isEmpty = self._is_empty_table()
 
     def commit(self):
         self.conn.commit()
 
-    def check_columns(self):
-        schema = self.schema.replace('"', "'")
+    def _check_columns(self):
+        schema = self.schema.replace('"', "'") if self.schema != 'public' else "'public'"
         self.cur.execute(
             "SELECT * FROM " + '"information_schema"' +
             f".columns WHERE table_name = '{self.table_name}' and table_schema = {schema}")
 
         return [(column[3], column[7]) for column in self.cur.fetchall()]
 
-    def has_serial_id(self):
+    def _has_serial_id(self):
         self.cur.execute(
             "SELECT * FROM " + '"information_schema"' +
             ".columns WHERE table_name = '{self.table_name}' AND ordinal_position = 1")
@@ -33,7 +33,7 @@ class SPTable:
         else:
             return False
 
-    def is_empty_table(self):
+    def _is_empty_table(self):
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name}")
         obj = self.cur.fetchall()
 
@@ -41,7 +41,8 @@ class SPTable:
 
     def get_id_by_title(self, title):
         title_name = self.columns[1][0]
-        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {title_name} like '{title}'")
+        title = f"'{title}'" if not self.columns[0][1] != 'integer' else f'{title}'
+        self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {title_name} = {title}")
         obj = self.cur.fetchall()
 
         return obj[0][0] if obj else False
