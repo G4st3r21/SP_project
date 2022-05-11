@@ -20,6 +20,7 @@ def table_parsing():
             response_obj_id = ResponseObj.add(response_obj)
 
 
+
             planed_date = row[3].value
 
             if row[4].value:

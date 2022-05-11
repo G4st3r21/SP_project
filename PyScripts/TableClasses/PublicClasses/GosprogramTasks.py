@@ -1,4 +1,4 @@
-from PyScripts.TableClasses.PublicClasses.SPTable import SPTable
+from PyScripts.TableClasses.SPTables.SPTable import SPTable
 
 
 class GosprogramTasks(SPTable):
@@ -6,7 +6,7 @@ class GosprogramTasks(SPTable):
         super().__init__(table_name='tasks', table_title='task', cur=cur, conn=conn)
 
     def add(self, cyr_id, title) -> int:
-        obj_id = self.find_id_by_name(title)
+        obj_id = self.get_id_by_name(title)
         if obj_id:
             return obj_id
 
@@ -16,6 +16,6 @@ class GosprogramTasks(SPTable):
             obj_id = 1
         else:
             obj_id = obj_id[-1][0] + 1
-        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, '{cyr_id}', '{title}')")
+        self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, {cyr_id}, '{title}')")
 
         return obj_id
