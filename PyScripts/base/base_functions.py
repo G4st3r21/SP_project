@@ -100,6 +100,9 @@ def format_title(string):
     if string[-1] == '.':
         string = rreplace(string, '.', '', 1)
 
+    if string.startswith('"') and string.endswith('"'):
+        string = string[1:-1]
+
     string = string.replace(string.split()[0], string.split()[0].capitalize())
     # string.replace(string[0], string[0].upper())
     # string.capitalize()
