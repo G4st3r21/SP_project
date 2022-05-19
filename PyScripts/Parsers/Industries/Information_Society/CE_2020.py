@@ -61,7 +61,7 @@ def table_parsing():
 
 cols, rows, cur, conn = parser_init('11.1. Контрольные события.xlsx', sheet_number=1, first_str_number=12)
 ResponseObj = SPTable('response_obj', cur, conn)
-ControlEvent2020 = SPTableArbitrary('control_event2020', cur, conn, schema='Available_Environment')
-CommentsCE2020 = SPTable('comments_ce2020',  cur, conn, schema='Available_Environment')
-DateControlEvent2020 = SPTableArbitrary('date_control_event2020', cur, conn, schema='Available_Environment')
+ControlEvent2020 = SPTableArbitrary('control_event2020', cur, conn, schema='Information_Society')
+CommentsCE2020 = SPTable('comments_ce2020',  cur, conn, schema='Information_Society')
+DateControlEvent2020 = SPTableArbitrary('date_control_event2020', cur, conn, schema='Information_Society')
 table_parsing()

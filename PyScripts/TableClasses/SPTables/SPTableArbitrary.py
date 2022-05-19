@@ -15,7 +15,7 @@ class SPTableArbitrary(SPTable):
         return obj[0] if obj else False
 
     def get_by_tuple(self, *args, condition_type='AND'):
-        args = list(args)
+        args = list(args)[:-1]
         if len(args) == len(self.columns):
             get_args = [f"{self.columns[args.index(arg)][0]} = '{arg}'" if type(
                 arg) is str else f"{self.columns[args.index(arg)][0]} = {arg}" for arg in args]
@@ -37,6 +37,7 @@ class SPTableArbitrary(SPTable):
         request_args = ", ".join([f"'{arg}'" if type(arg) is str else str(arg) for arg in args])
         if len(args) == len(self.columns):
             self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({request_args})")
+            return args[0]
         elif len(args) + 1 == len(self.columns):
             if 'integer' in self.columns[0][1]:
                 request_columns = ', '.join([column[0] for column in self.columns[1:]])
