@@ -25,9 +25,12 @@ def part(string):
             parts[i] = parts[i].strip()
             if (len(parts[i]) >= 4 and parts[i][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][1] == '.' and\
                     parts[i][2] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][3] == '.' and
-                    parts[i+1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ') or \
-                    (parts[i + 1].endswith(',') or parts[i + 1].endswith(';')) and parts[i + 1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 1][1] != '.'\
-                    and parts[i + 2][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 2][1] != '.':
+                    parts[i+1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i+1].endswith(',') or parts[i+1].endswith(';')) or \
+                    (len(parts[i+1]) >= 5 and parts[i+1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i+1][1] == '.' and\
+                    parts[i+1][2] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i+1][3] == '.' and
+                    parts[i+1].endswith(',') or parts[i+1].endswith(';')) or \
+                    ((parts[i + 1].endswith(',') or parts[i + 1].endswith(';')) and parts[i + 1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 1][1] != '.'\
+                    and parts[i + 2][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 2][1] != '.'):
                 str_list.append(' '.join(parts[k:i + 2]))
                 k = i + 2
     str_list.append(' '.join(parts[k:]))
@@ -109,14 +112,14 @@ def table_parsing():
 
         EventsResponseObj.add(code_events, response_obj_id)
 
-        # commit_all()
+        commit_all()
 
 
 cols, rows, cur, conn = parser_init("2020.xlsx",
-                                    sheet_number=1, first_str_number=6)
+                                    sheet_number=1, first_str_number=10)
 first_column = 1
 year = str(2020)
-sector = 'Economic'
+sector = 'Energy_Efficiency'
 
 Gosprogram = Gosprogram(cur, conn)
 Subprogram = SPTableArbitrary('subprogram' + year, cur, conn, schema=sector)
