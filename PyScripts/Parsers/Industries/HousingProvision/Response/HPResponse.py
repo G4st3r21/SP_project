@@ -1,8 +1,9 @@
-from PyScripts.TableClasses.PublicClasses.SPTableArbitrary import SPTableArbitrary
-from PyScripts.TableClasses.PublicClasses.SPTableManyToMany import SPTableManyToMany
+from PyScripts.TableClasses.SPTables.SPTableArbitrary import SPTableArbitrary
+from PyScripts.TableClasses.SPTables.SPTableManyToMany import SPTableManyToMany
 from PyScripts.base.base_functions import parser_init, format_title, partition
 from PyScripts.TableClasses.PublicClasses.Gosprogram import Gosprogram
-from PyScripts.TableClasses.PublicClasses.SPTable import SPTable
+from PyScripts.TableClasses.SPTables.SPTable import SPTable
+
 
 def commit_all():
     Gosprogram.commit()
@@ -49,14 +50,19 @@ def table_parsing():
             response_obj = format_title(row[first_column + 2].value)
             response_obj_id = ResponseObj.add(response_obj)
 
-            fio = partition(format_title(row[first_column + 3].value))
+            fio = partition(row[first_column + 3].value)
             for response_fio in fio:
                 response_fio_id += 1
-                if response_fio_id > int(ResponseFio.add(response_fio_id, response_obj_id, response_fio)):
-                    EventsResponseFio.add(code_events, str(ResponseFio.add(response_fio_id, response_obj_id, response_fio)))
+                if ResponseFio.add(response_fio_id, response_obj_id, response_fio) is not None \
+                        and response_fio_id > int(ResponseFio.add(response_fio_id, response_obj_id, response_fio)):
+                    # print(code_events)
+                    EventsResponseFio.add(code_events,
+                                          str(ResponseFio.add(response_fio_id, response_obj_id, response_fio)))
+                    print(code_events, response_fio)
                     response_fio_id -= 1
                 else:
                     EventsResponseFio.add(code_events, response_fio_id)
+                    print(code_events, response_fio)
 
             EventsResponseObj.add(code_events, response_obj_id)
 
@@ -68,15 +74,15 @@ first_column = 1
 year = str(2020)
 
 Gosprogram = Gosprogram(cur, conn)
-Subprogram = SPTableArbitrary('subprogram' + year, 'title_subprog', cur, conn, schema='Housing_Provision')
-MainEvent = SPTableArbitrary('main_event' + year, 'main_event', cur, conn, schema='Housing_Provision')
-Event = SPTableArbitrary('event' + year, 'event', cur, conn, schema='Housing_Provision')
+Subprogram = SPTableArbitrary('subprogram' + year, cur, conn, schema='Housing_Provision')
+MainEvent = SPTableArbitrary('main_event' + year, cur, conn, schema='Housing_Provision')
+Event = SPTableArbitrary('event' + year, cur, conn, schema='Housing_Provision')
 AllEvents = SPTableManyToMany('all_events' + year, cur, conn, schema='Housing_Provision')
-ResponseObj = SPTable('response_obj', 'response_obj', cur, conn)
-ResponseFio = SPTableArbitrary('response_fio' + year, 'fio', cur, conn, schema='Housing_Provision')
+ResponseObj = SPTable('response_obj', cur, conn)
+ResponseFio = SPTableArbitrary('response_fio' + year, cur, conn, schema='Housing_Provision')
 EventsResponseObj = SPTableManyToMany('events_response_obj' + year, cur, conn, schema='Housing_Provision')
 EventsResponseFio = SPTableManyToMany('events_response_fio' + year, cur, conn, schema='Housing_Provision')
 
 first_column -= 1
-# table_parsing()
-print(partition(format_title('Начальник отдела А.В.Гура\n')))
+table_parsing()
+

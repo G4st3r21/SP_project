@@ -68,10 +68,10 @@ def table_parsing():
         commit_all()
 
 
-cols, rows, cur, conn = parser_init("2020.xlsx",
-                                    sheet_number=1, first_str_number=10)
+cols, rows, cur, conn = parser_init("2016.xlsx",
+                                    sheet_number=6, first_str_number=8)
 first_column = 1
-year = str(2020)
+year = str(2016)
 
 Gosprogram = Gosprogram(cur, conn)
 Subprogram = SPTableArbitrary('subprogram' + year, cur, conn, schema='Environmental_Protection')
