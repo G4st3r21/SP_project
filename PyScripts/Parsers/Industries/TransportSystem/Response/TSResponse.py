@@ -57,7 +57,7 @@ def table_parsing():
                 AllEvents.add(prog_id, prog)
                 code_events = prog_id
 
-            if 'Подпрограмма'in row[first_column].value:
+            if 'Подпрограмма' in row[first_column].value:
                 subprog = format_title(row[first_column + 1].value)
                 subprog_id = format_title(row[first_column].value).split()[1]
                 AllEvents.add(subprog_id, subprog)
@@ -110,10 +110,10 @@ def table_parsing():
         commit_all()
 
 
-cols, rows, cur, conn = parser_init("2020.xlsx",
-                                    sheet_number=1, first_str_number=10)
-first_column = 1
-year = str(2020)
+cols, rows, cur, conn = parser_init("2017.xlsx",
+                                    sheet_number=1, first_str_number=9)
+first_column = 2
+year = str(2017)
 
 Gosprogram = Gosprogram(cur, conn)
 Subprogram = SPTableArbitrary('subprogram' + year, cur, conn, schema='Transport_System')

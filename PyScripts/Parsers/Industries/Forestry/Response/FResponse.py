@@ -85,7 +85,7 @@ def table_parsing():
 
             response_obj = format_title(row[first_column + 2].value)
             response_obj_id = ResponseObj.add(response_obj)
-            print(response_obj)
+            # print(response_obj)
 
             fio = part(row[first_column + 3].value)
             for response_fio in fio:
@@ -107,10 +107,10 @@ def table_parsing():
         commit_all()
 
 
-cols, rows, cur, conn = parser_init("2020.xlsx",
-                                    sheet_number=1, first_str_number=10)
+cols, rows, cur, conn = parser_init("2018.xlsx",
+                                    sheet_number=1, first_str_number=9)
 first_column = 1
-year = str(2020)
+year = str(2018)
 
 Gosprogram = Gosprogram(cur, conn)
 Subprogram = SPTableArbitrary('subprogram' + year, cur, conn, schema='Forestry')

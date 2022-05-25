@@ -33,12 +33,13 @@ def part(string):
     str_list = list()
     k = 0
     if len(parts) > 1:
-        for i in range(len(parts) - 1):
+        for i in range(1, len(parts) - 1):
             parts[i] = parts[i].strip()
             # if (len(parts[i]) >= 4 and parts[i][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][1] == '.' and\
             #         parts[i][2] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][3] == '.' and
             #         parts[i+1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ') or \
-            if (parts[i + 1].endswith(',') or parts[i + 1].endswith(';')) and parts[i + 1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 1][1] != '.'\
+            if (parts[i + 1].endswith(',') or parts[i + 1].endswith(';')) and\
+                    parts[i + 1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 1][1] != '.'\
                     and parts[i + 2][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 2][1] != '.':
                 str_list.append(' '.join(parts[k:i + 2]))
                 k = i + 2
@@ -55,7 +56,6 @@ def part(string):
             str_list[j] = str_list[j].replace(str_list[j].split()[0], 'ВРИО')
 
     return str_list
-
 
 def table_parsing():
     global prog, subprog, subprog_id, prog_id, main_event_id, code_events, response_obj_id
@@ -93,18 +93,16 @@ def table_parsing():
 
             print(code_events)
 
-            # if 'Ответственный исполнитель' in row[first_column + 2].value:
-            #     response_obj = format_title(' '.join(row[first_column + 2].value.split()[3:]))
-            #     response_obj_id = ResponseObj.add(response_obj)
-            #     print(response_obj)
-            #     ResponseMain.add(response_obj_id)
-            # else:
-            #     response_obj = format_title(' '.join(row[first_column + 2].value.split()))
-            #     # print(response_obj)
-            #     response_obj_id = ResponseObj.add(response_obj)
+            if 'Ответственный исполнитель' in row[first_column + 2].value:
+                response_obj = format_title(' '.join(row[first_column + 2].value.split()[2:]))
+                response_obj_id = ResponseObj.add(response_obj)
+                ResponseMain.add(response_obj_id)
+            else:
+                response_obj = format_title(' '.join(row[first_column + 2].value.split()[1:]))
+                response_obj_id = ResponseObj.add(response_obj)
 
-            response_obj = format_title(row[first_column + 2].value)
-            response_obj_id = ResponseObj.add(response_obj)
+            # response_obj = format_title(row[first_column + 2].value)
+            # response_obj_id = ResponseObj.add(response_obj)
 
             fio = part(row[first_column + 3].value)
             for response_fio in fio:
@@ -125,10 +123,10 @@ def table_parsing():
         commit_all()
 
 
-cols, rows, cur, conn = parser_init("2017.xlsx",
-                                    sheet_number=1, first_str_number=9)
-first_column = 2
-year = str(2017)
+cols, rows, cur, conn = parser_init("2016.xlsx",
+                                    sheet_number=1, first_str_number=7)
+first_column = 1
+year = str(2016)
 sector = 'Finance'
 
 Gosprogram = Gosprogram(cur, conn)
@@ -140,7 +138,7 @@ ResponseObj = SPTable('response_obj', cur, conn)
 ResponseFio = SPTableArbitrary('response_fio' + year, cur, conn, schema=sector)
 EventsResponseObj = SPTableManyToMany('events_response_obj' + year, cur, conn, schema=sector)
 EventsResponseFio = SPTableManyToMany('events_response_fio' + year, cur, conn, schema=sector)
-# ResponseMain = SPTableArbitrary('response_main' + year, cur, conn, schema=sector)
+ResponseMain = SPTableArbitrary('response_main' + year, cur, conn, schema=sector)
 
 
 first_column -= 1
