@@ -66,7 +66,7 @@ def table_parsing():
 
             EventsResponseObj.add(code_events, response_obj_id)
 
-        commit_all()
+        # commit_all()
 
 
 cols, rows, cur, conn = parser_init("Обеспечение жильем_2020.xlsx", sheet_number=1, first_str_number=10)
