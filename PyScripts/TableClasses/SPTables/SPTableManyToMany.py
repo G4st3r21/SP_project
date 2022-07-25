@@ -25,8 +25,8 @@ class SPTableManyToMany(SPTable):
         return obj if obj else False
 
     def find_tuple(self, args):
-        first_title = f"'{args[0]}'" if 'integer' not in self.columns[0][1] else args[0]
-        second_title = f"'{args[1]}'" if 'integer' not in self.columns[1][1] else args[1]
+        first_title = f'"{args[0]}"' if 'integer' not in self.columns[0][1] else args[0]
+        second_title = f'"{args[1]}"' if 'integer' not in self.columns[1][1] else args[1]
         self.cur.execute(
             f"SELECT * FROM {self.schema}.{self.table_name} WHERE {self.columns[0][0]} = {first_title}"
             f" and {self.columns[1][0]} = {second_title} ")

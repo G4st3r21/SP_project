@@ -1,6 +1,7 @@
+import datetime
+
 from PyScripts.TableClasses.SPTables.SPTable import SPTable
 from PyScripts.TableClasses.SPTables.SPTableArbitrary import SPTableArbitrary
-from PyScripts.TableClasses.SPTables.SPTableManyToMany import SPTableManyToMany
 from PyScripts.base.base_functions import parser_init
 
 
@@ -12,17 +13,12 @@ def commit_all():
 
 
 def table_parsing():
+    cnt = 0
     for row in rows:
-        # if ('Подпрограмма' in row[0].value or 'Основное мероприятие' in row[0].value):
-        #     code = row[0].value.split()[1]
-        #     code = code if code[-1] != '.' else code[:-1]
-        #     code_main_event = '.'.join(code.split('.')[:2])
-        #     control_event = row[1].value if row[1].value != None else control_event
-        #     print(code, code_main_event, control_event)
-        #     ControlEvent2020.add(code, code_main_event, control_event)
 
         if row[0].value != "" and not ('Подпрограмма' in row[0].value or 'Основное мероприятие' in row[0].value):
             code = row[0].value.split()[2]
+            print(code)
             code = code if code[-1] != '.' else code[:-1]
             code_main_event = '.'.join(code.split('.')[:2])
             control_event = row[1].value if row[1].value != None else control_event
@@ -36,7 +32,9 @@ def table_parsing():
             id_pf = 0
             id_done = 0
             id_viol = 0
-            date_ce = row[3].value
+            if cnt == 0:
+                date_ce = datetime.datetime.date(row[3].value).strftime("%Y.%m.%d")
+            print(date_ce)
             DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
 
             if row[4].value:
@@ -45,7 +43,11 @@ def table_parsing():
                 id_pf = 1
                 id_done = 1
                 id_viol = 0
-                date_ce = row[4].value
+                if cnt == 0:
+                    date_ce = datetime.datetime.date(row[4].value).strftime("%Y.%m.%d")
+                else:
+                    date_ce = row[4].value
+                print(date_ce)
 
             elif row[5].value:
                 # event_done = True
@@ -53,7 +55,11 @@ def table_parsing():
                 id_pf = 1
                 id_done = 1
                 id_viol = 1
-                date_ce = row[5].value
+                if cnt == 0:
+                    date_ce = datetime.datetime.date(row[5].value).strftime("%Y.%m.%d")
+                else:
+                    date_ce = row[5].value
+                print(date_ce)
 
             elif row[6].value == '-':
                 # event_done = False
@@ -66,25 +72,17 @@ def table_parsing():
             id = DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
             print(code, id_response, id_pf, id_done, id_viol, date_ce)
             print(id)
-
             if row[7].value:
                 comment = row[7].value
-                # CommentsCE2020.add(id, comment)
-                # if (id_pf == 1 and id_viol == 1):
-                #     CommentsCE2020.add(id,comment)
-                # elif (id_pf == 1 and id_done == 0 and id_viol == 0):
-                #     CommentsCE2020.add(id,comment)
-                # elif (id_pf == 1 or id_done == 1 or id_viol == 1) and row[6].value == '-':
-                #     CommentsCE2020.add(id, comment)
                 CommentsCE2020.add(id, comment)
-
+            cnt += 1
         commit_all()
 
-cols, rows, cur, conn = parser_init('11.1. Контрольные события.xlsx', sheet_number=1, first_str_number=12)
+cols, rows, cur, conn = parser_init('Отчет Развитие лесного хозяйства_01.03.2021 уточн.xlsx', sheet_number=5, first_str_number=12)
 ResponseObj = SPTable('response_obj', cur, conn)
-ControlEvent2020 = SPTableArbitrary('control_event2020', cur, conn, schema='Education')
-CommentsCE2020 = SPTableArbitrary('comments_ce2020',  cur, conn, schema='Education')
-DateControlEvent2020 = SPTableArbitrary('date_control_event2020', cur, conn, schema='Education')
+ControlEvent2020 = SPTableArbitrary('control_event2020', cur, conn, schema='Forestry')
+CommentsCE2020 = SPTableArbitrary('comments_ce2020',  cur, conn, schema='Forestry')
+DateControlEvent2020 = SPTableArbitrary('date_control_event2020', cur, conn, schema='Forestry')
 table_parsing()
 
 

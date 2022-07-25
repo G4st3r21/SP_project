@@ -11,13 +11,13 @@ def commit_all():
 def table_parsing():
     for row in rows:
 
-        if not ('Подпрограмма' in row[0].value or 'Основное мероприятие' in row[0].value):
+        if row[0].value != "" and not ('Подпрограмма' in row[0].value or 'Основное мероприятие' in row[0].value):
             code = row[0].value.split()[2]
             code = code if code[-1] != '.' else code[:-1]
             code_main_event = '.'.join(code.split('.')[:2])
             control_event = row[1].value if row[1].value != None else control_event
             print(code, code_main_event, control_event)
-            ControlEvent2020.add(code, code_main_event, control_event)
+            code = ControlEvent2020.add(code, code_main_event, control_event)
 
             response_obj = row[2].value
             id_response = ResponseObj.add(response_obj)
@@ -52,16 +52,18 @@ def table_parsing():
                 id_viol = 0
                 date_ce = "11.11.1111"
 
-            DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
+            id = DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
             print(code, id_response, id_pf, id_done, id_viol, date_ce)
 
-            comment = row[7].value
-            CommentsCE2020.add(comment)
+            if row[7].value:
+                comment = row[7].value
+                CommentsCE2020.add(id, comment)
         commit_all()
 
 cols, rows, cur, conn = parser_init('11.1. Контрольные события.xlsx', sheet_number=1, first_str_number=12)
 ResponseObj = SPTable('response_obj', cur, conn)
 ControlEvent2020 = SPTableArbitrary('control_event2020', cur, conn, schema='Available_Environment')
-CommentsCE2020 = SPTable('comments_ce2020',  cur, conn, schema='Available_Environment')
+CommentsCE2020 = SPTableArbitrary('comments_ce2020',  cur, conn, schema='Available_Environment')
 DateControlEvent2020 = SPTableArbitrary('date_control_event2020', cur, conn, schema='Available_Environment')
 table_parsing()
+

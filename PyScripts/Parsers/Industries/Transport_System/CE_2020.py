@@ -1,6 +1,5 @@
 from PyScripts.TableClasses.SPTables.SPTable import SPTable
 from PyScripts.TableClasses.SPTables.SPTableArbitrary import SPTableArbitrary
-from PyScripts.TableClasses.SPTables.SPTableManyToMany import SPTableManyToMany
 from PyScripts.base.base_functions import parser_init
 
 
@@ -69,22 +68,14 @@ def table_parsing():
 
             if row[7].value:
                 comment = row[7].value
-                # CommentsCE2020.add(id, comment)
-                # if (id_pf == 1 and id_viol == 1):
-                #     CommentsCE2020.add(id,comment)
-                # elif (id_pf == 1 and id_done == 0 and id_viol == 0):
-                #     CommentsCE2020.add(id,comment)
-                # elif (id_pf == 1 or id_done == 1 or id_viol == 1) and row[6].value == '-':
-                #     CommentsCE2020.add(id, comment)
+
                 CommentsCE2020.add(id, comment)
 
         commit_all()
 
-cols, rows, cur, conn = parser_init('11.1. Контрольные события.xlsx', sheet_number=1, first_str_number=12)
+cols, rows, cur, conn = parser_init('Развитие транспортной системы_2020.xlsx', sheet_number=1, first_str_number=12)
 ResponseObj = SPTable('response_obj', cur, conn)
-ControlEvent2020 = SPTableArbitrary('control_event2020', cur, conn, schema='Education')
-CommentsCE2020 = SPTableArbitrary('comments_ce2020',  cur, conn, schema='Education')
-DateControlEvent2020 = SPTableArbitrary('date_control_event2020', cur, conn, schema='Education')
+ControlEvent2020 = SPTableArbitrary('control_event2020', cur, conn, schema='Transport_System')
+CommentsCE2020 = SPTableArbitrary('comments_ce2020',  cur, conn, schema='Transport_System')
+DateControlEvent2020 = SPTableArbitrary('date_control_event2020', cur, conn, schema='Transport_System')
 table_parsing()
-
-
