@@ -4,6 +4,7 @@ from PyScripts.TableClasses.SPTables.SPTableManyToMany import SPTableManyToMany
 from PyScripts.base.base_functions import format_title, partition, parser_init
 from PyScripts.TableClasses.PublicClasses.Gosprogram import Gosprogram
 
+
 def commit_all():
     Gosprogram.commit()
     Subprogram.commit()
@@ -12,6 +13,7 @@ def commit_all():
     # ResponseObj.commit()
     # EventsResponseObj.commit()
     # EventsResponseFio.commit()
+
 
 def part(string):
     parts = string.replace('\n', ' ').strip().split()
@@ -42,6 +44,7 @@ def part(string):
             str_list[j] = str_list[j].replace(str_list[j].split()[0], 'ВРИО')
 
     return str_list
+
 
 def table_parsing():
     global prog, subprog, subprog_id, prog_id, main_event_id, code_events
@@ -99,12 +102,11 @@ def table_parsing():
         commit_all()
 
 
-cols, rows, cur, conn = parser_init("2022.xlsx", sheet_number=1, first_str_number=12)
-first_column = 1
 year = str(2022)
-sector = 'Cultural_Heritage'
+cols, rows, cur, conn = parser_init(year + ".xlsx", sheet_number=1, first_str_number=10)
+first_column = 1
 
-
+sector = 'Business'
 Gosprogram = Gosprogram(cur, conn)
 Subprogram = SPTableArbitrary('subprogram' + year, cur, conn, schema=sector)
 MainEvent = SPTableArbitrary('main_event' + year, cur, conn, schema=sector)

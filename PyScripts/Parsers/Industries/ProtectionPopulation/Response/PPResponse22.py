@@ -8,7 +8,7 @@ def commit_all():
     Gosprogram.commit()
     Subprogram.commit()
     MainEvent.commit()
-    Event.commit()
+    # Event.commit()
     # ResponseObj.commit()
     # EventsResponseObj.commit()
     # EventsResponseFio.commit()
@@ -102,13 +102,13 @@ def table_parsing():
 cols, rows, cur, conn = parser_init("2022.xlsx", sheet_number=1, first_str_number=12)
 first_column = 1
 year = str(2022)
-sector = 'Cultural_Heritage'
+sector = 'Information_Society'
 
 
 Gosprogram = Gosprogram(cur, conn)
 Subprogram = SPTableArbitrary('subprogram' + year, cur, conn, schema=sector)
 MainEvent = SPTableArbitrary('main_event' + year, cur, conn, schema=sector)
-Event = SPTableArbitrary('event' + year, cur, conn, schema=sector)
+# Event = SPTableArbitrary('event' + year, cur, conn, schema=sector)
 AllEvents = SPTableManyToMany('all_events' + year, cur, conn, schema=sector)
 # ResponseObj = SPTable('response_obj', cur, conn)
 # ResponseFio = SPTableArbitrary('response_fio' + year, cur, conn, schema=sector)

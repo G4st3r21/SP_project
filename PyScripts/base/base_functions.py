@@ -56,6 +56,7 @@ def unmerge_all_cells(ws):
     except Exception:
         pass
 
+
 def partition(string):
     parts = string.split()
     str_list = list()
@@ -77,6 +78,7 @@ def partition(string):
 
     return str_list
 
+
 def parts(string, sym):
     parts = string.split(sym)
     for i in range(len(parts)):
@@ -86,9 +88,11 @@ def parts(string, sym):
 
     return parts
 
+
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
     return new.join(li)
+
 
 def format_title(string):
     if '\n' in string and not string.endswith('\n'):

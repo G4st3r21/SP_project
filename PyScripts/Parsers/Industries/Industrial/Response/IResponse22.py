@@ -99,10 +99,10 @@ def table_parsing():
         commit_all()
 
 
-cols, rows, cur, conn = parser_init("2022.xlsx", sheet_number=1, first_str_number=12)
+cols, rows, cur, conn = parser_init("2022.xlsx", sheet_number=1, first_str_number=10)
 first_column = 1
 year = str(2022)
-sector = 'Cultural_Heritage'
+sector = 'Industrial'
 
 
 Gosprogram = Gosprogram(cur, conn)

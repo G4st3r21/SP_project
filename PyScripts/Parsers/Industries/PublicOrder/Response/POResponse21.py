@@ -8,7 +8,7 @@ def commit_all():
     Gosprogram.commit()
     Subprogram.commit()
     MainEvent.commit()
-    Event.commit()
+    # Event.commit()
     # ResponseObj.commit()
     # EventsResponseObj.commit()
     # EventsResponseFio.commit()
@@ -22,11 +22,11 @@ def part(string):
             parts[i] = parts[i].strip()
             if (len(parts[i]) >= 4 and parts[i][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][1] == '.' and\
                     parts[i][2] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i][3] == '.' and
-                    parts[i+1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i+1].endswith(',') or parts[i+1].endswith(';')) or \
+                    parts[i+1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i+1].endswith(',') or parts[i+1].endswith(';')) or parts[i+1].endswith('.') or \
                     (len(parts[i+1]) >= 5 and parts[i+1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i+1][1] == '.' and\
                     parts[i+1][2] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i+1][3] == '.' and
-                    parts[i+1].endswith(',') or parts[i+1].endswith(';')) or \
-                    ((parts[i + 1].endswith(',') or parts[i + 1].endswith(';')) and parts[i + 1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 1][1] != '.'\
+                    parts[i+1].endswith(',') or parts[i+1].endswith('.') or parts[i+1].endswith(';')) or \
+                    ((parts[i + 1].endswith(',') or parts[i + 1].endswith(';') or parts[i+1].endswith('.')) and parts[i + 1][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 1][1] != '.'\
                     and parts[i + 2][0] in 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ' and parts[i + 2][1] != '.'):
                 str_list.append(' '.join(parts[k:i + 2]))
                 k = i + 2
@@ -74,9 +74,9 @@ def table_parsing():
                 event = format_title(row[first_column + 1].value)
                 event_id = format_title(row[first_column].value).split()[1]
                 AllEvents.add(event_id, event)
-                Event.add(event_id, main_event_id, event)
+                # Event.add(event_id, main_event_id, event)
                 code_events = event_id
-
+            #
             # response_obj = format_title(row[first_column + 2].value)
             # response_obj_id = ResponseObj.add(response_obj)
             #
@@ -99,16 +99,16 @@ def table_parsing():
         commit_all()
 
 
-cols, rows, cur, conn = parser_init("2022.xlsx", sheet_number=1, first_str_number=12)
+cols, rows, cur, conn = parser_init("2021_1.xlsx", sheet_number=1, first_str_number=10)
 first_column = 1
-year = str(2022)
-sector = 'Cultural_Heritage'
+year = str(2021)
+sector = 'Public_Order'
 
 
 Gosprogram = Gosprogram(cur, conn)
 Subprogram = SPTableArbitrary('subprogram' + year, cur, conn, schema=sector)
 MainEvent = SPTableArbitrary('main_event' + year, cur, conn, schema=sector)
-Event = SPTableArbitrary('event' + year, cur, conn, schema=sector)
+# Event = SPTableArbitrary('event' + year, cur, conn, schema=sector)
 AllEvents = SPTableManyToMany('all_events' + year, cur, conn, schema=sector)
 # ResponseObj = SPTable('response_obj', cur, conn)
 # ResponseFio = SPTableArbitrary('response_fio' + year, cur, conn, schema=sector)

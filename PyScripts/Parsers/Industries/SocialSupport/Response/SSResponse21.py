@@ -9,9 +9,9 @@ def commit_all():
     Subprogram.commit()
     MainEvent.commit()
     Event.commit()
-    # ResponseObj.commit()
-    # EventsResponseObj.commit()
-    # EventsResponseFio.commit()
+    ResponseObj.commit()
+    EventsResponseObj.commit()
+    EventsResponseFio.commit()
 
 def part(string):
     parts = string.replace('\n', ' ').strip().split()
@@ -77,32 +77,32 @@ def table_parsing():
                 Event.add(event_id, main_event_id, event)
                 code_events = event_id
 
-            # response_obj = format_title(row[first_column + 2].value)
-            # response_obj_id = ResponseObj.add(response_obj)
-            #
-            # fio = part(row[first_column + 3].value)
-            # for response_fio in fio:
-            #     if response_fio is not None and len(response_fio) > 1:
-            #         response_fio_id += 1
-            #         if ResponseFio.add(response_fio_id, response_obj_id, response_fio) is not None \
-            #                 and response_fio_id > int(ResponseFio.add(response_fio_id, response_obj_id, response_fio)):
-            #             EventsResponseFio.add(code_events,
-            #                                   str(ResponseFio.add(response_fio_id, response_obj_id, response_fio)))
-            #             print(code_events, response_fio, response_fio_id)
-            #             response_fio_id -= 1
-            #         else:
-            #             EventsResponseFio.add(code_events, response_fio_id)
-            #             print(code_events, response_fio, response_fio_id)
-            #
-            # EventsResponseObj.add(code_events, response_obj_id)
+            response_obj = format_title(row[first_column + 2].value)
+            response_obj_id = ResponseObj.add(response_obj)
+
+            fio = part(row[first_column + 3].value)
+            for response_fio in fio:
+                if response_fio is not None and len(response_fio) > 1:
+                    response_fio_id += 1
+                    if ResponseFio.add(response_fio_id, response_obj_id, response_fio) is not None \
+                            and response_fio_id > int(ResponseFio.add(response_fio_id, response_obj_id, response_fio)):
+                        EventsResponseFio.add(code_events,
+                                              str(ResponseFio.add(response_fio_id, response_obj_id, response_fio)))
+                        print(code_events, response_fio, response_fio_id)
+                        response_fio_id -= 1
+                    else:
+                        EventsResponseFio.add(code_events, response_fio_id)
+                        print(code_events, response_fio, response_fio_id)
+
+            EventsResponseObj.add(code_events, response_obj_id)
 
         commit_all()
 
 
-cols, rows, cur, conn = parser_init("2022.xlsx", sheet_number=1, first_str_number=12)
+cols, rows, cur, conn = parser_init("2021.xlsx", sheet_number=1, first_str_number=10)
 first_column = 1
-year = str(2022)
-sector = 'Cultural_Heritage'
+year = str(2021)
+sector = 'Social_Support'
 
 
 Gosprogram = Gosprogram(cur, conn)
@@ -110,10 +110,10 @@ Subprogram = SPTableArbitrary('subprogram' + year, cur, conn, schema=sector)
 MainEvent = SPTableArbitrary('main_event' + year, cur, conn, schema=sector)
 Event = SPTableArbitrary('event' + year, cur, conn, schema=sector)
 AllEvents = SPTableManyToMany('all_events' + year, cur, conn, schema=sector)
-# ResponseObj = SPTable('response_obj', cur, conn)
-# ResponseFio = SPTableArbitrary('response_fio' + year, cur, conn, schema=sector)
-# EventsResponseObj = SPTableManyToMany('events_response_obj' + year, cur, conn, schema=sector)
-# EventsResponseFio = SPTableManyToMany('events_response_fio' + year, cur, conn, schema=sector)
+ResponseObj = SPTable('response_obj', cur, conn)
+ResponseFio = SPTableArbitrary('response_fio' + year, cur, conn, schema=sector)
+EventsResponseObj = SPTableManyToMany('events_response_obj' + year, cur, conn, schema=sector)
+EventsResponseFio = SPTableManyToMany('events_response_fio' + year, cur, conn, schema=sector)
 # ResponseMain = SPTableArbitrary('response_main' + year, cur, conn, schema=sector)
 
 first_column -= 1

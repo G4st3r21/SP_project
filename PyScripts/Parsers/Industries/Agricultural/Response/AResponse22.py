@@ -102,7 +102,7 @@ def table_parsing():
 cols, rows, cur, conn = parser_init("2022.xlsx", sheet_number=1, first_str_number=12)
 first_column = 1
 year = str(2022)
-sector = 'Cultural_Heritage'
+sector = 'Agricultural'
 
 
 Gosprogram = Gosprogram(cur, conn)
