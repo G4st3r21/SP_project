@@ -38,18 +38,18 @@ def table_parsing():
             id_pf = 0
             id_done = 0
             id_viol = 0
-            date_ce = datetime.datetime.date(row[3].value).strftime("%Y.%m.%d")
-            DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
-            # row[3].value.split('\n')
-            # my_list_d = row[3].value.split('\n')
-            # if len(my_list_d) > 1:
-            #     print(my_list_d)
-            #     for i in range(0, len(my_list_d)):
-            #         date_ce = my_list_d[i]
-            #         DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
-            # elif len(my_list_d) == 1:
-            #     date_ce = datetime.datetime.date(row[3].value).strftime("%Y.%m.%d")
-            #     DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
+            # date_ce = datetime.datetime.date(row[3].value).strftime("%Y.%m.%d")
+            # DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
+            row[3].value.split('\n')
+            my_list_d = row[3].value.split('\n')
+            if len(my_list_d) > 1:
+                print(my_list_d)
+                for i in range(0, len(my_list_d)):
+                    date_ce = my_list_d[i]
+                    DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
+            elif len(my_list_d) == 1:
+                date_ce = datetime.datetime.date(row[3].value).strftime("%Y.%m.%d")
+                DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
 
             if row[4].value:
                 # event_done = True
@@ -57,19 +57,18 @@ def table_parsing():
                 id_pf = 1
                 id_done = 1
                 id_viol = 0
-                date_ce = datetime.datetime.date(row[4].value).strftime("%Y.%m.%d")
-                DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
-                # row[4].value.split('\n')
-                # my_list_d = row[4].value.split('\n')
-                # if len(my_list_d) > 1:
-                #     print(my_list_d)
-                #     for i in range(0, len(my_list_d)):
-                #         date_ce = my_list_d[i]
-                #         DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
-                #
-                # elif len(my_list_d) == 1:
-                #     date_ce = datetime.datetime.date(row[4].value).strftime("%Y.%m.%d")
-                #     DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
+                # date_ce = datetime.datetime.date(row[4].value).strftime("%Y.%m.%d")
+                # DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
+                row[4].value.split('\n')
+                my_list_d = row[4].value.split('\n')
+                if len(my_list_d) > 1:
+                    print(my_list_d)
+                    for i in range(0, len(my_list_d)):
+                        date_ce = my_list_d[i]
+                        DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
+                elif len(my_list_d) == 1:
+                    date_ce = datetime.datetime.date(row[4].value).strftime("%Y.%m.%d")
+                    DateControlEvent2020.add(code, id_response, id_pf, id_done, id_viol, date_ce)
 
             elif row[5].value:
                 # event_done = True
@@ -108,9 +107,9 @@ def table_parsing():
 
         commit_all()
 
-cols, rows, cur, conn = parser_init('Отчёт ГП_2020.xlsx', sheet_number=1, first_str_number=120)
+cols, rows, cur, conn = parser_init('формы_ 8_9, 10, 11,11.1,12, 13.xlsx', sheet_number=5, first_str_number=72)
 ResponseObj = SPTable('response_obj', cur, conn)
-ControlEvent2020 = SPTableArbitrary('control_event2020', cur, conn, schema='Economic')
-CommentsCE2020 = SPTableArbitrary('comments_ce2020', cur, conn, schema='Economic')
-DateControlEvent2020 = SPTableArbitrary('date_control_event2020', cur, conn, schema='Economic')
+ControlEvent2020 = SPTableArbitrary('control_event2021', cur, conn, schema='Finance')
+CommentsCE2020 = SPTableArbitrary('comments_ce2021', cur, conn, schema='Finance')
+DateControlEvent2020 = SPTableArbitrary('date_control_event2021', cur, conn, schema='Finance')
 table_parsing()

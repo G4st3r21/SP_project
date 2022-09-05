@@ -72,11 +72,11 @@ def table_parsing():
 
         commit_all()
 
-cols, rows, cur, conn = parser_init('11.1. Контрольные события.xlsx', sheet_number=1, first_str_number=12)
+cols, rows, cur, conn = parser_init('_11.1. Контрольные события.xlsx', sheet_number=1, first_str_number=12)
 ResponseObj = SPTable('response_obj', cur, conn)
-ControlEvent2020 = SPTableArbitrary('control_event2020', cur, conn, schema='Education')
-CommentsCE2020 = SPTableArbitrary('comments_ce2020',  cur, conn, schema='Education')
-DateControlEvent2020 = SPTableArbitrary('date_control_event2020', cur, conn, schema='Education')
+ControlEvent2020 = SPTableArbitrary('control_event2021', cur, conn, schema='Employment_Promotion')
+CommentsCE2020 = SPTableArbitrary('comments_ce2021',  cur, conn, schema='Employment_Promotion')
+DateControlEvent2020 = SPTableArbitrary('date_control_event2021', cur, conn, schema='Employment_Promotion')
 table_parsing()
 
 
