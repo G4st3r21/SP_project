@@ -88,7 +88,7 @@ def create_xlsx_table(table, merged, excel_file, count):
 
 start_time = datetime.now()
 paths = []
-folder = 'wordFiles'
+folder = '/home/g4st3r/PycharmProjects/SP_project/wordFiles'
 problem_files = []
 files_without_tables = []
 # files_with_images = []
