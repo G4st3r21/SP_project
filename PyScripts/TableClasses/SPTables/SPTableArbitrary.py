@@ -1,5 +1,7 @@
 import sys
 
+from psycopg2 import ProgrammingError
+
 from PyScripts.TableClasses.SPTables.SPTable import SPTable
 
 
@@ -10,7 +12,7 @@ class SPTableArbitrary(SPTable):
     def get_by_column(self, column_name, title):
         title = f"'{title}'" if not self.columns[0][1] != 'integer' else f'{title}'
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE {column_name} = {title}")
-        obj = self.cur.fetchall()
+        obj = self.fetchall()
 
         return obj[0] if obj else False
 
@@ -19,12 +21,15 @@ class SPTableArbitrary(SPTable):
         if len(args) == len(self.columns):
             get_args = [f"{self.columns[args.index(arg)][0]} = '{arg}'" if type(
                 arg) is str else f"{self.columns[args.index(arg)][0]} = {arg}" for arg in args]
-            self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(get_args[1:])}")
+            self.cur.execute(
+                f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(get_args[1:])}")
         elif len(args) + 1 == len(self.columns):
-            get_args = [f"{self.columns[args.index(arg)+1][0]} = '{arg}'" if type(
-                arg) is str else f"{self.columns[args.index(arg)+1][0]} = {arg}" for arg in args]
-            self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(get_args)}")
-        obj = self.cur.fetchall()
+            get_args = [f"{self.columns[args.index(arg) + 1][0]} = '{arg}'" if type(
+                arg) is str else f"{self.columns[args.index(arg) + 1][0]} = {arg}" for arg in args]
+            self.cur.execute(
+                f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(get_args)}")
+
+        obj = self.fetchall()
 
         return obj[0][0] if obj else False
 

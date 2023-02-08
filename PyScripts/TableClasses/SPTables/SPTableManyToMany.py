@@ -12,7 +12,7 @@ class SPTableManyToMany(SPTable):
     def get_first_columns_by_second(self, second_title):
         second_title = f"'{second_title}'" if 'integer' not in self.columns[1][1] else second_title
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {self.columns[1][0]} = {second_title}")
-        obj = self.cur.fetchall()
+        obj = self.fetchall()
 
         return obj if obj else False
 
@@ -20,7 +20,7 @@ class SPTableManyToMany(SPTable):
         first_title = f"'{first_title}'" if 'integer' not in self.columns[0][1] else first_title
         self.cur.execute(
             f"SELECT * FROM {self.schema}.{self.table_name} WHERE {self.columns[0][0]} = {first_title}")
-        obj = self.cur.fetchall()
+        obj = self.fetchall()
 
         return obj if obj else False
 
@@ -30,7 +30,7 @@ class SPTableManyToMany(SPTable):
         self.cur.execute(
             f"SELECT * FROM {self.schema}.{self.table_name} WHERE {self.columns[0][0]} = {first_title}"
             f" and {self.columns[1][0]} = {second_title} ")
-        obj = self.cur.fetchall()
+        obj = self.fetchall()
 
         return True if obj else False
 

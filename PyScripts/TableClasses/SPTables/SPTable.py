@@ -1,5 +1,7 @@
 import sys
 
+import psycopg2
+
 
 class SPTable:
     def __init__(self, table_name, cur, conn, schema='public'):
@@ -10,6 +12,12 @@ class SPTable:
         self.columns = self._check_columns()
         self.hasSerialID = self._has_serial_id()
         self.isEmpty = self._is_empty_table()
+
+    def fetchall(self):
+        try:
+            return self.cur.fetchall()
+        except psycopg2.ProgrammingError:
+            return False
 
     def commit(self):
         self.conn.commit()
@@ -27,7 +35,7 @@ class SPTable:
             "SELECT * FROM " + '"information_schema"' +
             ".columns WHERE table_name = '{self.table_name}' AND ordinal_position = 1")
 
-        id_type = self.cur.fetchall()
+        id_type = self.fetchall()
         if id_type:
             return id_type[0][5]
         else:
@@ -35,7 +43,7 @@ class SPTable:
 
     def _is_empty_table(self):
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name}")
-        obj = self.cur.fetchall()
+        obj = self.fetchall()
 
         return False if obj else True
 
@@ -43,14 +51,14 @@ class SPTable:
         title_name = self.columns[1][0]
         title = f"'{title}'" if not self.columns[0][1] != 'integer' else f'{title}'
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} WHERE {title_name} = {title}")
-        obj = self.cur.fetchall()
+        obj = self.fetchall()
 
         return obj[0][0] if obj else False
 
     def get_title_by_id(self, obj_id):
         id_name = self.columns[0][0]
         self.cur.execute(f"SELECT * FROM {self.schema}.{self.table_name} * WHERE {id_name} = {obj_id}")
-        obj = self.cur.fetchall()
+        obj = self.fetchall()
 
         return obj[0][1] if obj else False
 
