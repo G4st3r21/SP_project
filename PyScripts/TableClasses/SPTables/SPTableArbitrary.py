@@ -33,6 +33,39 @@ class SPTableArbitrary(SPTable):
 
         return obj[0][0] if obj else False
 
+    def _format_arguments(self, request_args: list[str, int]):
+        for arg, arg_type in zip(request_args, self.columns):
+            match arg_type[-1]:
+                case "text", "character varying":
+                    if type(arg) is not str:
+                        raise TypeError(
+                            f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
+                        )
+                case "integer", "bigint", "smallint":
+                    if type(arg) is str and not arg.isdigit():
+                        raise TypeError(
+                            f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
+                        )
+                    elif type(arg) is str and arg.isdigit():
+                        arg = int(arg)
+                case "double precision", "boolean":
+                    if type(arg) is str and arg not in ["True", "False"]:
+                        raise TypeError(
+                            f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
+                        )
+                    elif type(arg) is str and arg in ["True", "False"]:
+                        arg = True if arg == "True" else False
+                case "real":
+                    try:
+                        if type(arg) is str:
+                            arg = float(arg)
+                    except Exception:
+                        raise TypeError(
+                            f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
+                        )
+                case "date":
+                    
+
     def add(self, *args, condition_type='AND'):
         args = list(args)
         obj_id = self.get_by_tuple(*args, condition_type)
