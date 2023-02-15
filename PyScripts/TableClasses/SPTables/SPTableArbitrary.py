@@ -5,7 +5,7 @@ from PyScripts.TableClasses.SPTables.SPTable import SPTable
 
 
 class SPTableArbitrary(SPTable):
-    def __init__(self, table_name, cur, conn, schema = 'public'):
+    def __init__(self, table_name, cur, conn, schema='public'):
         super().__init__(table_name, cur, conn, schema)
 
     def get_by_column(self, column_name, title):
@@ -33,33 +33,34 @@ class SPTableArbitrary(SPTable):
         return obj[0][0] if obj else False
 
     def _format_arguments(self, request_args: list[str, int]):
+        formatted_args = []
         for arg, arg_type in zip(request_args, self.columns):
             match arg_type[-1]:
-                case "text", "character varying":
+                case "text" | "character varying":
                     if type(arg) is not str:
                         raise TypeError(
                             f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
                         )
                     else:
-                        arg = f"'{arg}'"
-                case "integer", "bigint", "smallint":
+                        formatted_args.append(f"'{arg}'")
+                case "integer" | "bigint" | "smallint":
                     if type(arg) is str and not arg.isdigit():
                         raise TypeError(
                             f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
                         )
-                    elif type(arg) is str and arg.isdigit():
-                        arg = f"{int(arg)}"
-                case "double precision", "boolean":
+                    else:
+                        formatted_args.append(str(int(arg)))
+                case "double precision" | "boolean":
                     if type(arg) is str and arg not in ["True", "False"]:
                         raise TypeError(
                             f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
                         )
                     elif type(arg) is bool:
-                        arg = "True" if arg else "False"
+                        formatted_args.append("True" if arg else "False")
                 case "real":
                     try:
                         if type(arg) is str:
-                            arg = f"{float(arg)}"
+                            formatted_args.append(f"{float(arg)}")
                     except Exception:
                         raise TypeError(
                             f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
@@ -67,17 +68,17 @@ class SPTableArbitrary(SPTable):
                 case "date":
                     try:
                         if type(arg) == date:
-                            arg = f"'{arg.__str__()}'"
+                            formatted_args.append(f"'{arg.__str__()}'")
                         else:
                             temp_date = arg.split(".")
-                            arg = date(year=int(temp_date[2]), month=int(temp_date[1]), day=int(temp_date[0]))
-                            arg = f"'{arg.__str__()}'"
+                            temp_arg = date(year=int(temp_date[2]), month=int(temp_date[1]), day=int(temp_date[0]))
+                            formatted_args.append(f"'{temp_arg.__str__()}'")
                     except Exception:
                         raise TypeError(
                             f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
                         )
 
-        return request_args
+        return formatted_args
 
     def add(self, *args, condition_type='AND'):
         args = list(args)
