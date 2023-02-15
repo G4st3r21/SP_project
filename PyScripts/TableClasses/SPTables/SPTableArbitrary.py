@@ -1,14 +1,11 @@
 import sys
 from datetime import date
 
-from psycopg2 import ProgrammingError
-from psycopg2 import cursor, connection
-
 from PyScripts.TableClasses.SPTables.SPTable import SPTable
 
 
 class SPTableArbitrary(SPTable):
-    def __init__(self, table_name: str, cur: cursor, conn: connection, schema: str = 'public'):
+    def __init__(self, table_name, cur, conn, schema = 'public'):
         super().__init__(table_name, cur, conn, schema)
 
     def get_by_column(self, column_name, title):

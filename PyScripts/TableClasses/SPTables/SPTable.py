@@ -1,15 +1,14 @@
 import sys
 
 import psycopg2
-from psycopg2 import cursor, connection
 
 
 class SPTable:
-    def __init__(self, table_name: str, cur: cursor, conn: connection, schema: str = 'public'):
+    def __init__(self, table_name, cur, conn, schema='public'):
         self.schema = f'"{schema}"' if schema != 'public' else schema
         self.table_name = table_name
-        self.cur: cursor = cur
-        self.conn: connection = conn
+        self.cur = cur
+        self.conn = conn
 
         self.columns = self._check_columns()
         self.hasSerialID = self._has_serial_id()
