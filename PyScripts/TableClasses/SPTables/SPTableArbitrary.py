@@ -66,9 +66,12 @@ class SPTableArbitrary(SPTable):
                         )
                 case "date":
                     try:
-                        temp_date = arg.split(".")
-                        arg = date(year=int(temp_date[2]), month=int(temp_date[1]), day=int(temp_date[0]))
-                        arg = f"'{arg.__str__()}'"
+                        if type(arg) == date:
+                            arg = f"'{arg.__str__()}'"
+                        else:
+                            temp_date = arg.split(".")
+                            arg = date(year=int(temp_date[2]), month=int(temp_date[1]), day=int(temp_date[0]))
+                            arg = f"'{arg.__str__()}'"
                     except Exception:
                         raise TypeError(
                             f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
