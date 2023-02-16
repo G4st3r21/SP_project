@@ -53,7 +53,36 @@ def get_file_names(path):
 
 
 def get_response_obj_id(obj):
-    """Returns id of a response object. By i.korn."""
+    """Returns id of a response object if object exists or adds it and returns id. By i.korn."""
+    title_response_obj = ""
+    if "департамент" in obj:
+        str = obj[obj.find("департамент"):].split(' ')
+        str[0] = str[0][:len("департамент")]
+        str[0] = str[0][0].upper() + str[0][1:len(str[0])]
+        for word in str:
+            title_response_obj += (word + " ")
+    if "правительств" in obj:
+        str = obj[obj.find("правительств"):].split(' ')
+        str[0] = str[0][:len("правительств")] + "о"
+        str[0] = str[0][0].upper() + str[0][1:len(str[0])]
+        for word in str:
+            title_response_obj += (word + " ")
+    response_obj_id = ResponseObj.get_id_by_title(title_response_obj.strip())
+    # ResponseObj.commit()
+    if response_obj_id:
+        return response_obj_id
+    else:
+        return None
+
+
+def get_position(obj):
+    """Returns position without object. By i.korn."""
+    position = ""
+    if "департамент" in obj:
+        position = obj[:obj.find("департамент")].strip()
+    if "правительств" in obj:
+        position = obj[:obj.find("правительств")].strip()
+    return position
 
 
 def fill_fed_project(sheet):
@@ -137,18 +166,21 @@ def fill_addition_in_reg_project(sheet, code_project):
 
 
 def fill_reg_response_fio2019(sheet):
-    """Fills REG_RESPONSE_FIO2019 table"""
-    for row in sheet.iter_rows(max_row=13):
-        if row[0].value is not None:
-            if ("Куратор регионального проекта" or "Руководитель регионального проекта" or "Администратор регионального проекта") in format_title(row[0].value):
-                for j in range(1, len(row)):
-                    if row[j].value is not None:
-                        reg_response_fio = row[j].value.split(", ")[0]
-                        position = row[j].value.split(", ")[1]
-                        response_obj_id = get_response_obj_id(position)
-                RegResponseFio2019.add(response_obj_id, reg_response_fio, position)
-                RegResponseFio2019.commit()
-            # todo: parse people from the first rows from the 5th point
+    """Fills REG_RESPONSE_FIO2019 table. By i.korn."""
+    for row in sheet.iter_rows(min_row=8, max_row=13):
+        if "Куратор регионального проекта" in format_title(row[0].value) \
+                or "Руководитель регионального проекта" in format_title(row[0].value) \
+                or "Администратор регионального проекта" in format_title(row[0].value):
+            for j in range(1, len(row)):
+                if row[j].value is not None:
+                    response_obj_id = get_response_obj_id(row[j].value.split(", ")[1])
+                    reg_response_fio = row[j].value.split(", ")[0]
+                    position = get_position(row[j].value.split(", ")[1])
+                    if response_obj_id and position:
+                        print(response_obj_id, reg_response_fio, position)
+                        RegResponseFio2019.add(response_obj_id, reg_response_fio, position)
+                        RegResponseFio2019.commit()
+                    break
 
 
 def fill_reg_project2019(sheet, code):
@@ -188,19 +220,21 @@ def fill_reg_project_and_gosprogram2019(sheet):
     """Fills REG_PROJECT_AND_GOSPROGRAM2019 table"""
 
 
-path = "D:/КСП/Tables/5_Regionalnye_proekty/5_Региональные проекты/2019 паспорта по состоянию на 23.12.2019"
-files = get_file_names(path)
-# schemes = parse_schemes()
+# todo: fix .add
+response_obj_id = 23
+reg_response_fio = "Мазур Мария Александровна"
+position = "Руководитель"
+RegResponseFio2019.add(response_obj_id, reg_response_fio, position)
+RegResponseFio2019.commit()
 
-for f in files:
-    code = get_code(f)
-    # if code in schemes:
-    # schema = schemes[code]
-
-    full_path = path + "/" + f
-    wb = load_workbook(full_path)
-
-    # fill_reg_project(wb.active, code, schema)
-    # fill_reg_response_fio2019(wb.active)
-    fill_addition_in_reg_project(wb.active, code)
-    print(code, "file is loaded to database")
+# path = "D:/КСП/Tables/5_Regionalnye_proekty/5_Региональные проекты/2019 паспорта по состоянию на 23.12.2019"
+# files = get_file_names(path)
+#
+# for f in files:
+#     code = get_code(f)
+#
+#     full_path = path + "/" + f
+#     wb = load_workbook(full_path)
+#
+#     fill_reg_response_fio2019(wb.active)
+#     print(code, "file is loaded to database")
