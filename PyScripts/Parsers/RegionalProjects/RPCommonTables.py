@@ -12,11 +12,13 @@ cur, conn = db_conn(table_name="All Tables")
 
 FedProject = SPTable('fed_project', cur, conn)
 RegProject = SPTableArbitrary('reg_project', cur, conn)
-AdditionInRegProject = SPTable('addition_in_reg_project', cur, conn)
+AdditionInRegProject = SPTableArbitrary('addition_in_reg_project', cur, conn)
 RegProject2019 = SPTableArbitrary('reg_project2019', cur, conn)
 RegProjectsAndGosprogram2019 = SPTableArbitrary('reg_project_and_gosprogram2019', cur, conn)
 RegResponseFio2019 = SPTableArbitrary('reg_response_fio2019', cur, conn)
 RegProjectsAndResponses2019 = SPTableArbitrary('reg_projects_and_responses2019', cur, conn)
+
+ResponseObj = SPTableArbitrary('response_obj', cur, conn)
 
 
 def format_date(input_str):
@@ -50,6 +52,10 @@ def get_file_names(path):
     return [f for f in listdir(path) if isfile(join(path, f))]
 
 
+def get_response_obj_id(obj):
+    """Returns id of a response object. By i.korn."""
+
+
 def fill_fed_project(sheet):
     """Temporary function to fill only FED_PROJECT tables"""
     for row in sheet.iter_rows(min_row=6, max_row=9):
@@ -80,9 +86,6 @@ def parse_schemes():
 def fill_reg_project(sheet, code, schema):
     """Fills REG_PROJECT and FED_PROJECT tables"""
     title = format_title(sheet['A6'].value)
-    # id_fed_project = 1
-    # short_title = ""
-    # start_date, end_date = datetime.date(2022, 2, 1)
     for row in sheet.iter_rows(max_row=14):
         if row[0].value is not None:
             if 'Наименование федерального проекта' in format_title(row[0].value):
@@ -108,22 +111,44 @@ def fill_reg_project(sheet, code, schema):
     RegProject.commit()
 
 
-def fill_addition_in_reg_project(sheet):
+def fill_addition_in_reg_project(sheet, code_project):
     """Fills ADDITION_IN_REG_PROJECT table"""
+    additional_info_title = False
+    addition = ""
+    for row in sheet.iter_rows():
+        if row[0].value is not None:
+            if "6. Дополнительная информация" in format_title(row[0].value):
+                additional_info_title = True
+                continue
+            if "ПЛАН" in format_title(row[0].value) \
+                    or "МЕТОДИКА" in format_title(row[0].value):
+                additional_info_title = False
+                break
+            if additional_info_title:
+                to_add = format_title(row[0].value)
+                if not to_add.isnumeric():
+                    if addition != "":
+                        addition += " " + to_add
+                    else:
+                        addition += to_add
+    if addition != "":
+        AdditionInRegProject.add(code_project, addition)
+        AdditionInRegProject.commit()
 
 
 def fill_reg_response_fio2019(sheet):
     """Fills REG_RESPONSE_FIO2019 table"""
-    # todo: parse people from 1st table and first rows from the 5th
-    ResponseObj = SPTableArbitrary('response_obj', cur, conn)
-    for i in range(10, 13):
-        person_info = sheet[f'I{i}'].value.split(', ')
-        reg_response_fio = person_info[0]
-        position = person_info[1]
-        response_obj = person_info  # todo: parse object from position
-        response_obj_id = ResponseObj.get_id_by_title(response_obj)  #
-        RegResponseFio2019.add(response_obj_id, reg_response_fio, position)
-        RegResponseFio2019.commit()
+    for row in sheet.iter_rows(max_row=13):
+        if row[0].value is not None:
+            if ("Куратор регионального проекта" or "Руководитель регионального проекта" or "Администратор регионального проекта") in format_title(row[0].value):
+                for j in range(1, len(row)):
+                    if row[j].value is not None:
+                        reg_response_fio = row[j].value.split(", ")[0]
+                        position = row[j].value.split(", ")[1]
+                        response_obj_id = get_response_obj_id(position)
+                RegResponseFio2019.add(response_obj_id, reg_response_fio, position)
+                RegResponseFio2019.commit()
+            # todo: parse people from the first rows from the 5th point
 
 
 def fill_reg_project2019(sheet, code):
@@ -165,14 +190,17 @@ def fill_reg_project_and_gosprogram2019(sheet):
 
 path = "D:/КСП/Tables/5_Regionalnye_proekty/5_Региональные проекты/2019 паспорта по состоянию на 23.12.2019"
 files = get_file_names(path)
-schemes = parse_schemes()
+# schemes = parse_schemes()
 
 for f in files:
     code = get_code(f)
-    schema = schemes[code]
+    # if code in schemes:
+    # schema = schemes[code]
 
     full_path = path + "/" + f
     wb = load_workbook(full_path)
 
-    fill_reg_project(wb.active, code, schema)
-    print(f, "file is loaded to database, code")
+    # fill_reg_project(wb.active, code, schema)
+    # fill_reg_response_fio2019(wb.active)
+    fill_addition_in_reg_project(wb.active, code)
+    print(code, "file is loaded to database")
