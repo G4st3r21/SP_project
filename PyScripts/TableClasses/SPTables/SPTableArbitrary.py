@@ -18,19 +18,43 @@ class SPTableArbitrary(SPTable):
     def get_by_tuple(self, *args, condition_type='AND'):
         args = list(args)
         if len(args) == len(self.columns):
-            get_args = [f"{self.columns[args.index(arg)][0]} = '{arg}'" if type(
-                arg) is str else f"{self.columns[args.index(arg)][0]} = {arg}" for arg in args]
+            get_args = [
+                f"{self.columns[args.index(arg)][0]} = '{arg}'"
+                if type(arg) is str else f"{self.columns[args.index(arg)][0]} = {arg}"
+                for arg in args
+            ]
             self.cur.execute(
                 f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(get_args[1:])}")
         elif len(args) + 1 == len(self.columns):
-            get_args = [f"{self.columns[args.index(arg) + 1][0]} = '{arg}'" if type(
-                arg) is str else f"{self.columns[args.index(arg) + 1][0]} = {arg}" for arg in args]
+            get_args = [
+                f"{self.columns[args.index(arg) + 1][0]} = '{arg}'"
+                if type(arg) is str else f"{self.columns[args.index(arg) + 1][0]} = {arg}"
+                for arg in args
+            ]
             self.cur.execute(
                 f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(get_args)}")
 
         obj = self.fetchall()
 
         return obj[0][0] if obj else False
+
+    def get_by_custom_filter_expression(self, filter_expression: [None, dict], condition_type='AND'):
+        if not filter_expression:
+            self.cur.execute("SELECT * FROM {self.schema}.{self.table_name}")
+            return self.fetchall()
+
+        formatted_args = [
+            f"{key} LIKE '{value}'"
+            if type(key) is str else
+            f"{key} = {value}"
+            for key, value in filter_expression.items()
+        ]
+
+        self.cur.execute(
+            f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(formatted_args)}"
+        )
+
+        return self.fetchall()
 
     def _format_arguments(self, request_args: list[str, int]):
         formatted_args = []
