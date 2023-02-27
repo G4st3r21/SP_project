@@ -18,7 +18,7 @@ RegProjectsAndGosprogram2019 = SPTableArbitrary('reg_project_and_gosprogram2019'
 RegResponseFio2019 = SPTableArbitrary('reg_response_fio2019', cur, conn)
 RegProjectsAndResponses2019 = SPTableArbitrary('reg_projects_and_responses2019', cur, conn)
 
-ResponseObj = SPTableArbitrary('response_obj', cur, conn)
+ResponseObj = SPTable('response_obj', cur, conn)
 
 
 def format_date(input_str):
@@ -177,7 +177,6 @@ def fill_reg_response_fio2019(sheet):
                     reg_response_fio = row[j].value.split(", ")[0]
                     position = get_position(row[j].value.split(", ")[1])
                     if response_obj_id and position:
-                        print(response_obj_id, reg_response_fio, position)
                         RegResponseFio2019.add(response_obj_id, reg_response_fio, position)
                         RegResponseFio2019.commit()
                     break
@@ -220,21 +219,13 @@ def fill_reg_project_and_gosprogram2019(sheet):
     """Fills REG_PROJECT_AND_GOSPROGRAM2019 table"""
 
 
-# todo: fix .add
-response_obj_id = 23
-reg_response_fio = "Мазур Мария Александровна"
-position = "Руководитель"
-RegResponseFio2019.add(response_obj_id, reg_response_fio, position)
-RegResponseFio2019.commit()
+path = "D:/КСП/Tables/5_Regionalnye_proekty/5_Региональные проекты/2019 паспорта по состоянию на 23.12.2019"
+files = get_file_names(path)
 
-# path = "D:/КСП/Tables/5_Regionalnye_proekty/5_Региональные проекты/2019 паспорта по состоянию на 23.12.2019"
-# files = get_file_names(path)
-#
-# for f in files:
-#     code = get_code(f)
-#
-#     full_path = path + "/" + f
-#     wb = load_workbook(full_path)
-#
-#     fill_reg_response_fio2019(wb.active)
-#     print(code, "file is loaded to database")
+for f in files:
+    code = get_code(f)
+    full_path = path + "/" + f
+    wb = load_workbook(full_path)
+
+    fill_reg_response_fio2019(wb.active)
+    print(code, "file is loaded to database")
