@@ -18,19 +18,13 @@ class SPTableArbitrary(SPTable):
     def get_by_tuple(self, *args, condition_type='AND'):
         args = list(args)
         if len(args) == len(self.columns):
-            get_args = [
-                f"{self.columns[args.index(arg)][0]} = '{arg}'"
-                if type(arg) is str else f"{self.columns[args.index(arg)][0]} = {arg}"
-                for arg in args
-            ]
+            get_args = [f"{self.columns[args.index(arg)][0]} = '{arg}'" if type(
+                arg) is str else f"{self.columns[args.index(arg)][0]} = {arg}" for arg in args]
             self.cur.execute(
                 f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(get_args[1:])}")
         elif len(args) + 1 == len(self.columns):
-            get_args = [
-                f"{self.columns[args.index(arg) + 1][0]} = '{arg}'"
-                if type(arg) is str else f"{self.columns[args.index(arg) + 1][0]} = {arg}"
-                for arg in args
-            ]
+            get_args = [f"{self.columns[args.index(arg) + 1][0]} = '{arg}'" if type(
+                arg) is str else f"{self.columns[args.index(arg) + 1][0]} = {arg}" for arg in args]
             self.cur.execute(
                 f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(get_args)}")
 
@@ -38,27 +32,10 @@ class SPTableArbitrary(SPTable):
 
         return obj[0][0] if obj else False
 
-    def get_by_custom_filter_expression(self, filter_expression: [None, dict], condition_type='AND'):
-        if not filter_expression:
-            self.cur.execute("SELECT * FROM {self.schema}.{self.table_name}")
-            return self.fetchall()
-
-        formatted_args = [
-            f"{key} LIKE '{value}'"
-            if type(key) is str else
-            f"{key} = {value}"
-            for key, value in filter_expression.items()
-        ]
-
-        self.cur.execute(
-            f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(formatted_args)}"
-        )
-
-        return self.fetchall()
-
-    def _format_arguments(self, request_args: list[str, int]):
+    def _format_arguments(self, request_args: list[str, int], has_id=False):
         formatted_args = []
-        for arg, arg_type in zip(request_args, self.columns):
+        args_and_types = zip(request_args, self.columns) if has_id else zip(request_args, self.columns[1:])
+        for arg, arg_type in args_and_types:
             match arg_type[-1]:
                 case "text" | "character varying":
                     if type(arg) is not str:
@@ -106,7 +83,7 @@ class SPTableArbitrary(SPTable):
 
     def add(self, *args, condition_type='AND'):
         args = list(args)
-        obj_id = self.get_by_tuple(*args, condition_type)
+        obj_id = self.get_by_tuple(*args, condition_type=condition_type)
         if obj_id:
             return obj_id
 
