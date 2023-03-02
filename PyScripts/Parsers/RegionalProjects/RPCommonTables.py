@@ -4,7 +4,7 @@ from os.path import isfile, join
 
 from openpyxl import load_workbook
 import datetime
-from PyScripts.base.base_functions import parser_init, db_conn
+from PyScripts.base.base_functions import db_conn
 from PyScripts.TableClasses.SPTables.SPTable import SPTable
 from PyScripts.TableClasses.SPTables.SPTableArbitrary import SPTableArbitrary
 
@@ -184,20 +184,36 @@ def fill_reg_response_fio2019(sheet):
 
 def fill_reg_project2019(sheet, code):
     """Fills REG_PROJECT2019 table"""
-    # if 'Куратор регионального проекта' in format_title(row[0].value):
-    #     kur = format_response(row[8].value)
-    #     kurator_fio, kurator_position = kur[0], kur[1]
-    # if 'Руководитель регионального проекта' in format_title(row[0].value):
-    #     man = format_response(row[8].value)
-    #     manager_fio, manager_position = man[0], man[1]
-    # if 'Администратор регионального проекта' in format_title(row[0].value):
-    #     adm = format_response(row[8].value)
-    #     administrator_fio, administrator_position = adm[0], adm[1]
-    curator_id = RegResponseFio2019.get_id_by_title(sheet['I10'].value.split(', ')[0])
-    manager_id = RegResponseFio2019.get_id_by_title(sheet['I11'].value.split(', ')[0])
-    administrator_id = RegResponseFio2019.get_id_by_title(sheet['I12'].value.split(', ')[0])
-    RegResponseFio2019.add(code, curator_id, manager_id, administrator_id)
-    RegResponseFio2019.commit()
+    curator_id, manager_id, administrator_id = 0, 0, 0
+    for row in sheet.iter_rows(max_row=14):
+        if row[0].value is not None:
+            if "Куратор регионального проекта" in format_title(row[0].value):  # забыл где format_title находится
+                for j in range(1, len(row)):
+                    if row[j].value is not None:
+                        fio = row[j].value.split(", ")[0]
+                        args_dict = {'reg_response_fio': fio}
+                        curator_tuple = RegResponseFio2019.get_by_custom_filter_expression(args_dict)
+                        if curator_tuple:
+                            curator_id = curator_tuple[0][0]
+            if "Руководитель регионального проекта" in format_title(row[0].value):
+                for j in range(1, len(row)):
+                    if row[j].value is not None:
+                        fio = row[j].value.split(", ")[0]
+                        args_dict = {'reg_response_fio': fio}
+                        manager_tuple = RegResponseFio2019.get_by_custom_filter_expression(args_dict)
+                        if manager_tuple:
+                            manager_id = manager_tuple[0][0]
+            if "Администратор регионального проекта" in format_title(row[0].value):
+                for j in range(1, len(row)):
+                    if row[j].value is not None:
+                        fio = row[j].value.split(", ")[0]
+                        args_dict = {'reg_response_fio': fio}
+                        administrator_tuple = RegResponseFio2019.get_by_custom_filter_expression(args_dict)
+                        if administrator_tuple:
+                            administrator_id = administrator_tuple[0][0]
+    if curator_id and manager_id and administrator_id:
+        RegProject2019.add(code, curator_id, manager_id, administrator_id)
+        RegProject2019.commit()
 
 
 def fill_reg_projects_and_responses2019(sheet):
@@ -219,6 +235,11 @@ def fill_reg_project_and_gosprogram2019(sheet):
     """Fills REG_PROJECT_AND_GOSPROGRAM2019 table"""
 
 
+# args_dict = {'reg_response_fio': "Попов Владимир Борисович"}
+# curator_tuple = RegResponseFio2019.get_by_custom_filter_expression(args_dict)
+# curator_id = curator_tuple[0][0]
+#
+# print(type(curator_id))
 path = "D:/КСП/Tables/5_Regionalnye_proekty/5_Региональные проекты/2019 паспорта по состоянию на 23.12.2019"
 files = get_file_names(path)
 
@@ -227,5 +248,5 @@ for f in files:
     full_path = path + "/" + f
     wb = load_workbook(full_path)
 
-    fill_reg_response_fio2019(wb.active)
+    fill_reg_project2019(wb.active, code)
     print(code, "file is loaded to database")

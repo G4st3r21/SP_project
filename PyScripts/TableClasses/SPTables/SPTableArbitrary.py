@@ -32,6 +32,25 @@ class SPTableArbitrary(SPTable):
 
         return obj[0][0] if obj else False
 
+    def get_by_custom_filter_expression(self, filter_expression: [None, dict], condition_type='AND'):
+        """by G4st3r21"""
+        if not filter_expression:
+            self.cur.execute("SELECT * FROM {self.schema}.{self.table_name}")
+            return self.fetchall()
+
+        formatted_args = [
+            f"{key} LIKE '{value}'"
+            if type(key) is str else
+            f"{key} = {value}"
+            for key, value in filter_expression.items()
+        ]
+
+        self.cur.execute(
+            f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(formatted_args)}"
+        )
+
+        return self.fetchall()
+
     def _format_arguments(self, request_args: list[str, int], has_id=False):
         formatted_args = []
         args_and_types = zip(request_args, self.columns) if has_id else zip(request_args, self.columns[1:])
