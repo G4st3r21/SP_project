@@ -1,6 +1,7 @@
 import re
 from os import listdir
 from os.path import isfile, join
+import datetime
 
 
 def format_title(input_str):
@@ -23,3 +24,12 @@ def get_code(input_str):
 
 def get_file_names(path):
     return [f for f in listdir(path) if isfile(join(path, f))]
+
+
+def format_date(input_str):
+    # DB format of DATE - YYYY-MM-DD
+    given_format = '%d.%m.%Y'  # our format of DATE from doc - dd.mm.YYYY
+    dates = input_str.replace(' ', '').split('-')
+    start, end = datetime.datetime.strptime(dates[0], given_format).date(), datetime.datetime.strptime(dates[1],
+                                                                                                       given_format).date()
+    return start, end

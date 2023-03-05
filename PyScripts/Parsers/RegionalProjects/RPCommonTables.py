@@ -1,9 +1,6 @@
-import re
-from os import listdir
-from os.path import isfile, join
+from base_functions_RP import get_file_names, get_code, format_title, format_date
 
 from openpyxl import load_workbook
-import datetime
 from PyScripts.base.base_functions import db_conn
 from PyScripts.TableClasses.SPTables.SPTable import SPTable
 from PyScripts.TableClasses.SPTables.SPTableArbitrary import SPTableArbitrary
@@ -21,37 +18,6 @@ RegProjectsAndResponses2019 = SPTableArbitrary('reg_projects_and_responses2019',
 ResponseObj = SPTable('response_obj', cur, conn)
 
 
-def format_date(input_str):
-    # DB format of DATE - YYYY-MM-DD
-    given_format = '%d.%m.%Y'  # our format of DATE from doc - dd.mm.YYYY
-    dates = input_str.replace(' ', '').split('-')
-    start, end = datetime.datetime.strptime(dates[0], given_format).date(), datetime.datetime.strptime(dates[1],
-                                                                                                       given_format).date()
-    return start, end
-
-
-def format_title(input_str):
-    if '\n' in input_str and input_str[-1] != '\n':
-        input_str.replace('\n', ' ')
-    elif input_str[-1] == '\n':
-        input_str.replace('\n', '')
-
-    if input_str[-1] == '.':
-        input_str.replace('.', '')
-
-    return ' '.join(input_str.split())
-
-
-def get_code(input_str):
-    pattern = re.compile("[A-Z][0-9]|[A-Z][A-Z]")  # pardon me but GA ??
-    match = re.search(pattern, input_str)
-    return match.group() if match else ""
-
-
-def get_file_names(path):
-    return [f for f in listdir(path) if isfile(join(path, f))]
-
-
 def get_response_obj_id(obj):
     """Returns id of a response object if object exists or adds it and returns id. By i.korn."""
     title_response_obj = ""
@@ -67,8 +33,8 @@ def get_response_obj_id(obj):
         str[0] = str[0][0].upper() + str[0][1:len(str[0])]
         for word in str:
             title_response_obj += (word + " ")
-    response_obj_id = ResponseObj.get_id_by_title(title_response_obj.strip())
-    # ResponseObj.commit()
+    response_obj_id = ResponseObj.add(title_response_obj.strip())
+    ResponseObj.commit()
     if response_obj_id:
         return response_obj_id
     else:
@@ -167,6 +133,7 @@ def fill_addition_in_reg_project(sheet, code_project):
 
 def fill_reg_response_fio2019(sheet):
     """Fills REG_RESPONSE_FIO2019 table. By i.korn."""
+    # todo: people with no response_obj: F2, F3, G5, GA, P1, P5, T1, T2
     for row in sheet.iter_rows(min_row=8, max_row=13):
         if "Куратор регионального проекта" in format_title(row[0].value) \
                 or "Руководитель регионального проекта" in format_title(row[0].value) \
@@ -187,7 +154,7 @@ def fill_reg_project2019(sheet, code):
     curator_id, manager_id, administrator_id = 0, 0, 0
     for row in sheet.iter_rows(max_row=14):
         if row[0].value is not None:
-            if "Куратор регионального проекта" in format_title(row[0].value):  # забыл где format_title находится
+            if "Куратор регионального проекта" in format_title(row[0].value):
                 for j in range(1, len(row)):
                     if row[j].value is not None:
                         fio = row[j].value.split(", ")[0]
@@ -212,7 +179,7 @@ def fill_reg_project2019(sheet, code):
                         if administrator_tuple:
                             administrator_id = administrator_tuple[0][0]
     if curator_id and manager_id and administrator_id:
-        RegProject2019.add(code, curator_id, manager_id, administrator_id)
+        RegProject2019.add(code, curator_id, manager_id, administrator_id)  # no serial, has_id=True in .add
         RegProject2019.commit()
 
 
@@ -245,8 +212,10 @@ files = get_file_names(path)
 
 for f in files:
     code = get_code(f)
-    full_path = path + "/" + f
-    wb = load_workbook(full_path)
+    if code:
+        full_path = path + "/" + f
+        wb = load_workbook(full_path)
 
-    fill_reg_project2019(wb.active, code)
-    print(code, "file is loaded to database")
+        # fill_reg_response_fio2019(wb.active)
+        fill_reg_project2019(wb.active, code)
+        print(code, "file is loaded to database")

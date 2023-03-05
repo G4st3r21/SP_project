@@ -103,10 +103,10 @@ class SPTableArbitrary(SPTable):
     def add(self, *args, condition_type='AND'):
         args = list(args)
         obj_id = self.get_by_tuple(*args, condition_type=condition_type)
-        if obj_id:
-            return obj_id
+        # if obj_id:  # get by tuple didn't work for reg_project table properly. temporary hiding this
+        #     return obj_id
 
-        request_args = self._format_arguments(args)
+        request_args = self._format_arguments(args, has_id=True)
         request_args = ", ".join(request_args)
         if len(args) == len(self.columns):
             self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({request_args})")
