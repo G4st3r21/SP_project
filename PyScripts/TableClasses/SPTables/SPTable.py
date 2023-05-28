@@ -93,3 +93,22 @@ class SPTable:
             self.cur.execute(f"INSERT INTO {self.schema}.{self.table_name} VALUES ({obj_id}, {title})")
 
             return obj_id
+
+    def get_by_custom_filter_expression(self, filter_expression: [None, dict], condition_type='AND'):
+        """by G4st3r21"""
+        if not filter_expression:
+            self.cur.execute("SELECT * FROM {self.schema}.{self.table_name}")
+            return self.fetchall()
+
+        formatted_args = [
+            f"{key} LIKE '{value}'"
+            if type(key) is str else
+            f"{key} = {value}"
+            for key, value in filter_expression.items()
+        ]
+
+        self.cur.execute(
+            f"SELECT * FROM {self.schema}.{self.table_name} WHERE {f' {condition_type} '.join(formatted_args)}"
+        )
+
+        return self.fetchall()

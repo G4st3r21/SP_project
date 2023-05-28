@@ -33,3 +33,11 @@ def format_date(input_str):
     start, end = datetime.datetime.strptime(dates[0], given_format).date(), datetime.datetime.strptime(dates[1],
                                                                                                        given_format).date()
     return start, end
+
+
+def format_date_single(input_str):
+    # DB format of DATE - YYYY-MM-DD
+    given_format = '%d.%m.%Y'  # our format of DATE from doc - dd.mm.YYYY
+    date_str = input_str.replace(' ', '')
+    date = datetime.datetime.strptime(date_str, given_format).date()
+    return date

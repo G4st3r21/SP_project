@@ -69,17 +69,17 @@ class SPTableArbitrary(SPTable):
                             f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
                         )
                     else:
-                        formatted_args.append(str(int(arg)))
-                case "double precision" | "boolean":
+                        formatted_args.append(str(int(arg)) if arg is not None else f"null")
+                case "boolean":
                     if type(arg) is str and arg not in ["True", "False"]:
                         raise TypeError(
                             f"Неверно указан аргумент {arg_type[0]}, ожидался тип {arg_type[-1]}, получен {type(arg)}"
                         )
                     elif type(arg) is bool:
                         formatted_args.append("True" if arg else "False")
-                case "real":
+                case "double precision" | "real":
                     try:
-                        if type(arg) is str:
+                        if type(arg) is str or int or float:
                             formatted_args.append(f"{float(arg)}")
                     except Exception:
                         raise TypeError(
@@ -102,7 +102,7 @@ class SPTableArbitrary(SPTable):
 
     def add(self, *args, condition_type='AND'):
         args = list(args)
-        obj_id = self.get_by_tuple(*args, condition_type=condition_type)
+        # obj_id = self.get_by_tuple(*args, condition_type=condition_type)
         # if obj_id:  # get by tuple didn't work for reg_project table properly. temporary hiding this
         #     return obj_id
 
