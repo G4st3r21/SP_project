@@ -1,3 +1,4 @@
+import psycopg2
 import regex as regex
 
 from base_functions_RP import get_file_names, get_code, format_title, format_date_single
@@ -56,13 +57,14 @@ def fill_fed_indicators2019(sheet, code):
                     and "Отсутствует показатель федерального проекта" not in row_data:
                 title_indicators.append(row_data)
     if title_indicators:
-        # print(code, title_indicators)
-        FedIndicators2019.add(id_fed_project, title_indicators[0])  # serial
-        FedIndicators2019.commit()
+        for t in title_indicators:
+            FedIndicators2019.add(id_fed_project, t)  # serial
+            FedIndicators2019.commit()
 
 
 def fill_reg_aims_indicators_names2019(sheet, code):
-    """Fills reg_aims_indicators_names2019 table"""
+    """Fills reg_aims_indicators_names2019 and schema.reg_indicators_passport_values2019 tables.
+    Note that it works only if project schema exists!"""
     # serial id
     args_dict = {'code_reg_project': code}
     # can be found by code
@@ -82,6 +84,7 @@ def fill_reg_aims_indicators_names2019(sheet, code):
     fed_indicators = False
     indicators = False
 
+    pass_values_dict = {}
     TITLE_INDICATOR_INDEX = 0
     TYPE_INDICATOR_INDEX = 1
     BASE_VALUE_INDEX = 2
@@ -92,6 +95,16 @@ def fill_reg_aims_indicators_names2019(sheet, code):
     VALUE2022_INDEX = 7
     VALUE2023_INDEX = 8
     VALUE2024_INDEX = 9
+
+    schema_exists = True
+    args_dict_schema = {'code': code}
+    schema = RegProject.get_by_custom_filter_expression(args_dict_schema)[0][6]
+    try:
+        RegIndicatorsPassportValues2019 = SPTableArbitrary('reg_indicators_passport_values2019', cur, conn,
+                                                           schema=schema)
+    except psycopg2.errors.UndefinedTable:
+        schema_exists = False
+
     for row in sheet.iter_rows(min_row=14):
         if row[0].value is not None:
             row_data = format_title(row[0].value)
@@ -109,13 +122,12 @@ def fill_reg_aims_indicators_names2019(sheet, code):
                     fed_indicator_id = FedIndicators2019.get_by_custom_filter_expression(args_dict)[0][0]
                 else:
                     fed_indicator_id = None
-            elif indicators and row_data[0].isdigit() and '.' in row_data:  # and not row_data.isdigit()
+            elif indicators and row_data[0].isdigit() and '.' in row_data:
                 index = 0
                 for j in range(1, len(row)):
-                    if row[j].value is not None and index < 5:
+                    if row[j].value is not None and index < 4:
                         if index == TITLE_INDICATOR_INDEX:
                             row_data_in = format_title(row[j].value)
-                            # done: process title
                             title_indicator = row_data_in
 
                             parce_units = regex.search(r"(?r), (\w+|\s+)+$", row_data_in)
@@ -139,16 +151,12 @@ def fill_reg_aims_indicators_names2019(sheet, code):
                             args_dict = {'type_of_indicator': row_data_in}
                             type_id = TypesOfIndicators.get_by_custom_filter_expression(args_dict)[0][0]
                         if index == BASE_VALUE_INDEX:
-                            # done: cast base value
                             base_value = row[j].value
                         if index == BASE_DATE_INDEX:
                             row_data_in = format_title(row[j].value)
-                            # done: cast date, alter format_date func for one date
-                            base_date = format_date_single(row_data_in)  # format_date(row_data_in)
-                            break
+                            base_date = format_date_single(row_data_in)
                         index += 1
-                    elif row[j].value is not None and index < 11:
-                        pass_values_dict = {}
+                    elif row[j].value is not None and index < 11 and schema_exists:
                         if index == VALUE2019_INDEX:
                             pass_values_dict['4'] = row[j].value
                         elif index == VALUE2020_INDEX:
@@ -168,8 +176,9 @@ def fill_reg_aims_indicators_names2019(sheet, code):
                                                                   type_id, base_value, base_date,
                                                                   dynamics_id, fed_indicator_id)
                 RegAimsIndicatorsNames2019.commit()
-                print(reg_indicator_id)
-                # todo: if add returns reg_indicator_id here we can also fill reg_indicators_passport_values in schema
+                for key in pass_values_dict.keys():
+                    RegIndicatorsPassportValues2019.add(reg_indicator_id, key, pass_values_dict[key])
+                    RegIndicatorsPassportValues2019.commit()
 
 
 def fill_types_of_indicators():
@@ -225,11 +234,9 @@ files = get_file_names(path)
 
 for f in files:
     code = get_code(f)
-    if code == 'E2':
+    if code == 'V6':
         full_path = path + "/" + f
         wb = load_workbook(full_path)
-        #args_dict = {'title_indicator': "Доля детей в возрасте от 5 до 18 лет, охваченных дополнительным образованием"}
-        #fed_indicator_id = FedIndicators2019.get_by_custom_filter_expression(args_dict)[0][0]
+
         fill_reg_aims_indicators_names2019(wb.active, code)
-        #print(fed_indicator_id)
         print(code, "file is loaded to database")
